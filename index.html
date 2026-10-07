@@ -2,12 +2,12 @@
 <html lang="ko">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>케미 러닝</title>
+<title>케미 러닝 🧪</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
 <style>
-  /* Layout: single centered column (max 560px), one screen at a time — intro → quiz → 궁합 유형 → 팀 궁합 */
+  /* Layout: single centered column (max 560px), one screen at a time — intro → quiz → 케미 캐릭터 → 팀 궁합 */
   :root {
     --bg: #F5F2FA;
     --surface: #FFFFFF;
@@ -20,7 +20,7 @@
     --accent-soft: rgba(106,63,166,.10);
     --on-accent: #FFFFFF;
     --wood: #3E8E5A;  --fire: #D2493C;  --earth: #B07D2B;  --metal: #7B8494;  --water: #2F6DB5;
-    --font-display: 'Gowun Batang', 'Nanum Myeongjo', serif;
+    --font-display: 'Jua', 'IBM Plex Sans KR', system-ui, sans-serif;
     --font-body: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
   }
@@ -58,7 +58,7 @@
 
   .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; color: var(--accent); text-transform: uppercase; }
   .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
-  h1, h2, h3 { font-family: var(--font-display); font-weight: 700; margin: 0; text-wrap: balance; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 400; margin: 0; text-wrap: balance; }
   p { margin: 0; }
 
   button, select, input { font-family: var(--font-body); }
@@ -74,7 +74,7 @@
   .stack { display: grid; gap: 10px; }
   .note { font-size: 12.5px; color: var(--fg-sub); }
 
-  /* 오행 글자 도장 */
+  /* 캐릭터 배지 */
   .seal {
     display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 10px;
     font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1;
@@ -152,7 +152,7 @@
 
   /* TEAM 궁합 */
   .members { display: grid; gap: 8px; margin: 18px 0 10px; }
-  .member { display: grid; grid-template-columns: 30px minmax(0, 1fr) 92px 92px 28px; gap: 8px; align-items: center; padding: 9px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 11px; }
+  .member { display: grid; grid-template-columns: 30px minmax(0, 1fr) 124px 104px 28px; gap: 8px; align-items: center; padding: 9px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 11px; }
   .member input, .member select {
     width: 100%; min-width: 0; padding: 8px 9px; border-radius: 8px; font-size: 13.5px;
     border: 1px solid var(--line); background: var(--surface2); color: var(--fg);
@@ -225,9 +225,9 @@
     <div class="intro-top">
       <span class="eyebrow">Codeit Sprint · AI Engineer</span>
       <h1>케미 러닝 <span style="font-size:.5em;color:var(--fg-sub);font-weight:400;font-family:var(--font-mono)">Chemi-Learning</span></h1>
-      <p class="intro-sub">질문 12개로 알아보는 나의 협업 유형과 우리 팀 궁합.<br>프로젝트 시작 전, 우리 팀 케미부터 학습시켜볼까요?</p>
+      <p class="intro-sub">🧪 우리 팀 케미, 아직 학습 전이에요!<br>질문 12개로 나의 케미 캐릭터를 찾고, 팀원들과 궁합을 맞춰보세요.</p>
       <div class="lineup" aria-hidden="true">
-        <span class="seal e0">木</span><span class="seal e1">火</span><span class="seal e2">土</span><span class="seal e3">金</span><span class="seal e4">水</span>
+        <span class="seal e0">💡</span><span class="seal e1">⚡</span><span class="seal e2">🫧</span><span class="seal e3">✅</span><span class="seal e4">🔍</span>
       </div>
     </div>
     <div class="card">
@@ -247,7 +247,7 @@
       </div>
       <p class="err" id="err" hidden>기수, 팀, 이름을 모두 입력해주세요.</p>
       <div class="stack">
-        <button class="btn" id="btn-start">내 궁합 유형 알아보기</button>
+        <button class="btn" id="btn-start">내 케미 캐릭터 찾기</button>
         <button class="btn ghost" id="btn-team-open">바로 팀 궁합 보기</button>
       </div>
     </div>
@@ -256,7 +256,7 @@
   <!-- QUIZ -->
   <section id="sc-quiz" class="screen" hidden>
     <div class="prog">
-      <div class="prog-meta"><span id="prog-label">질문</span><span id="prog-count">1 / 12</span></div>
+      <div class="prog-meta"><span id="prog-label">EPOCH · 케미 학습 중</span><span id="prog-count">1 / 12</span></div>
       <div class="track"><div class="fill" id="prog-fill" style="width:0%"></div></div>
     </div>
     <span class="q-cat" id="q-cat"></span>
@@ -268,7 +268,7 @@
   <!-- RESULT -->
   <section id="sc-result" class="screen" hidden>
     <div class="res-hero">
-      <span class="eyebrow">나의 궁합 유형</span>
+      <span class="eyebrow">학습 완료! 나의 케미 캐릭터는</span>
       <span class="seal big" id="res-seal"></span>
       <span class="res-who" id="res-who"></span>
       <h2 class="res-name" id="res-name"></h2>
@@ -276,7 +276,7 @@
     </div>
     <div class="card sections">
       <div>
-        <p class="sec-label">나의 오행 분포</p>
+        <p class="sec-label">캐릭터 예측 확률</p>
         <div class="dist" id="res-dist"></div>
       </div>
       <div>
@@ -293,7 +293,7 @@
         <span id="res-careful"></span>
       </div>
       <div>
-        <p class="sec-label">나와 잘 맞는 기운</p>
+        <p class="sec-label">시너지 나는 캐릭터</p>
         <div class="rel-pair" id="res-rel"></div>
       </div>
     </div>
@@ -313,7 +313,7 @@
   <section id="sc-team" class="screen" hidden>
     <span class="eyebrow">Team 궁합</span>
     <h1 style="font-size:30px;margin-top:8px">우리 팀 궁합 보기</h1>
-    <p class="intro-sub" style="margin-top:8px">팀원들이 공유한 결과를 보고 이름, 오행, 시간대를 입력하세요.</p>
+    <p class="intro-sub" style="margin-top:8px">팀원들이 공유한 결과를 보고 이름, 캐릭터, 시간대를 입력하세요.</p>
     <p class="note" id="team-sample-note" style="margin-top:6px" hidden>지금은 예시 팀이 채워져 있어요. 우리 팀 정보로 바꿔보세요.</p>
     <div class="card load-box" id="load-box" hidden>
       <p class="sec-label">팀원 결과 불러오기</p>
@@ -339,7 +339,7 @@
       </div>
       <div class="rrow">
         <div class="rfield"><label for="r-team">팀 번호</label><input id="r-team" data-r="team" placeholder="예) 3"></div>
-        <div class="rfield"><label for="r-name">팀명</label><input id="r-name" data-r="name" placeholder="예) 상생연구소"></div>
+        <div class="rfield"><label for="r-name">팀명</label><input id="r-name" data-r="name" placeholder="예) 오버핏방지단"></div>
       </div>
       <div class="rfield">
         <label for="r-goal">🎯 우리 팀 목표 (한 줄)</label>
@@ -393,7 +393,7 @@
       </div>
       <div class="rfield">
         <label for="r-extra">✨ 우리 팀만의 규칙</label>
-        <textarea id="r-extra" data-r="extra" placeholder="오행 처방을 참고해 하나 더 정해봐요"></textarea>
+        <textarea id="r-extra" data-r="extra" placeholder="튜닝 팁을 참고해 하나 더 정해봐요"></textarea>
         <div class="chips" id="extra-chips" data-for="r-extra"></div>
       </div>
       <div>
@@ -413,42 +413,42 @@
 // 구글 시트 저장용 Apps Script URL. 비워두면 저장 없이 결과만 보여줍니다.
 const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxJz9EYNKtnUL9Vh_LEvhUrMJkRpi5y8q59XY8wJ7C3Qe85eU2ygqncUBPcx5sgVRoA/exec';
 
-// 오행 인덱스: 0 木 · 1 火 · 2 土 · 3 金 · 4 水
-// 상생: 木→火→土→金→水→木  (i → (i+1)%5)
-// 상극: 木→土, 火→金, 土→水, 金→木, 水→火  (i → (i+2)%5)
+// 캐릭터 인덱스: 0 제너레이터 · 1 부스터 · 2 레귤러 · 3 밸리데이터 · 4 딥러너
+// 시너지: 0→1→2→3→4→0  (i → (i+1)%5)
+// 성장형: 0→2, 1→3, 2→4, 3→0, 4→1  (i → (i+2)%5)
 const EL = [
   {
-    ch: '木', kr: '나무', name: '틔우는 사람', en: 'SPROUT', gives: '새로운 아이디어',
-    desc: '늘 “이렇게 해보면 어때요?”를 먼저 꺼내는 팀원이에요. 새로운 시도를 좋아하고, 막힌 상황에서도 다른 길을 찾아냅니다. 팀에 성장의 기운을 불어넣는 사람이에요.',
-    traits: ['아이디어 뱅크', '도전', '성장 지향', '유연한 발상'],
+    ch: '💡', short: '제너레이터', name: '반짝 제너레이터', en: 'GENERATOR', gives: '반짝이는 아이디어',
+    desc: '생성형 AI처럼 아이디어를 끝없이 만들어내는 팀원이에요. “이렇게 해보면 어때요?”를 제일 먼저 꺼내고, 막힌 상황에서도 새로운 길을 찾아냅니다. 팀의 첫 프롬프트를 던지는 사람이에요.',
+    traits: ['아이디어 뱅크', '도전', '새로운 시도', '유연한 발상'],
     manual: ['아이디어를 낼 때는 바로 평가하기보다 일단 들어봐 주세요', '방향이 바뀌면 이유와 함께 알려주세요', '새로운 시도를 해볼 기회를 주면 신나게 일해요'],
     careful: '“원래 하던 대로 하죠”로 아이디어가 바로 닫힐 때'
   },
   {
-    ch: '火', kr: '불', name: '밝히는 사람', en: 'SPARK', gives: '에너지',
-    desc: '팀에 활기를 불어넣는 분위기 메이커예요. 먼저 인사하고, 솔직하게 표현하고, 다같이 으쌰으쌰하는 순간을 만듭니다. 이 사람이 있으면 팀 채널이 조용할 틈이 없어요.',
-    traits: ['분위기 메이커', '솔직함', '추진력', '표현력'],
+    ch: '⚡', short: '부스터', name: '텐션 부스터', en: 'BOOSTER', gives: '에너지',
+    desc: '팀의 학습률을 끌어올리는 분위기 메이커예요. 먼저 인사하고, 솔직하게 표현하고, 다같이 으쌰으쌰하는 순간을 만듭니다. 부스터가 있으면 팀 채널이 조용할 틈이 없어요.',
+    traits: ['분위기 메이커', '솔직함', '추진력', '리액션 장인'],
     manual: ['반응해주면 힘이 나요. 이모지 하나도 좋아요', '제가 너무 앞서가면 “잠깐!” 하고 불러주세요', '불편한 게 있으면 돌려 말하지 말고 바로 말해주세요'],
     careful: '팀 채널이 조용하고 아무도 반응하지 않을 때'
   },
   {
-    ch: '土', kr: '흙', name: '품는 사람', en: 'ANCHOR', gives: '안정감',
-    desc: '팀원 모두가 편하게 기댈 수 있는 사람이에요. 잘 들어주고, 빈틈을 조용히 메우고, 갈등이 생기면 양쪽을 이어줍니다. 팀이 흔들리지 않게 받쳐주는 중심이에요.',
+    ch: '🫧', short: '레귤러', name: '말랑 레귤러', en: 'REGULARIZER', gives: '안정감',
+    desc: '팀이 과열되지 않게 균형을 잡아주는 정규화 담당이에요. 잘 들어주고, 빈틈을 조용히 메우고, 갈등이 생기면 양쪽을 이어줍니다. 덕분에 팀이 한쪽으로 오버피팅되지 않아요.',
     traits: ['경청', '배려', '중재자', '팀의 버팀목'],
     manual: ['제가 괜찮다고 해도 한 번 더 물어봐 주세요', '결정이 필요할 땐 의견을 직접 물어봐 주세요', '고맙다는 말 한마디가 큰 힘이 돼요'],
     careful: '팀 분위기가 날카로워지고 서로 말을 아낄 때'
   },
   {
-    ch: '金', kr: '쇠', name: '다듬는 사람', en: 'REFINE', gives: '기준과 마무리',
-    desc: '기준을 세우고 끝까지 지키는 팀원이에요. 일정, 역할, 품질을 챙기고 흐지부지되는 걸 싫어합니다. 이 사람 덕분에 팀 결과물이 제때, 제대로 완성돼요.',
-    traits: ['책임감', '일정 관리', '결단력', '마무리 장인'],
+    ch: '✅', short: '밸리데이터', name: '꼼꼼 밸리데이터', en: 'VALIDATOR', gives: '기준과 마무리',
+    desc: '검증 세트처럼 팀 결과물을 꼼꼼히 확인하는 팀원이에요. 일정, 역할, 품질을 챙기고 흐지부지되는 걸 싫어합니다. 이 사람 덕분에 팀 결과물이 제때, 제대로 완성돼요.',
+    traits: ['책임감', '일정 관리', '품질 체크', '마무리 장인'],
     manual: ['맡은 일의 진행 상황을 중간중간 공유해주세요', '일정이 밀릴 것 같으면 미리 알려주세요', '제 피드백은 사람이 아니라 결과물에 대한 거예요'],
     careful: '정한 약속이나 마감이 말없이 지켜지지 않을 때'
   },
   {
-    ch: '水', kr: '물', name: '헤아리는 사람', en: 'DEPTH', gives: '깊은 통찰',
-    desc: '조용하지만 깊이 생각하는 팀원이에요. 상황을 관찰하고, 근거를 찾아보고, 정리된 생각을 꺼냅니다. 어려운 문제가 생겼을 때 팀이 가장 먼저 찾게 되는 사람이에요.',
-    traits: ['깊은 사고', '관찰력', '유연함', '근거 중심'],
+    ch: '🔍', short: '딥러너', name: '깊이 파는 딥러너', en: 'DEEP LEARNER', gives: '깊은 통찰',
+    desc: '이름처럼 깊게 파고드는 팀원이에요. 조용히 관찰하고, 근거와 원리를 찾아보고, 정리된 생각을 꺼냅니다. 어려운 문제가 생기면 팀이 가장 먼저 찾게 되는 사람이에요.',
+    traits: ['깊은 사고', '관찰력', '원리 탐구', '근거 중심'],
     manual: ['바로 대답하지 않아도 생각 중이에요. 조금만 기다려 주세요', '회의 안건은 미리 공유해주면 더 좋은 의견을 낼 수 있어요', '텍스트로 의견을 남기는 것도 편하게 받아주세요'],
     careful: '생각할 틈 없이 즉석에서 결정을 내려야 할 때'
   }
@@ -461,7 +461,7 @@ const TIMES = [
   { emo: '🌙', name: '올빼미형', range: '22시 이후' }
 ];
 
-// kind: 'el' = 오행 문항(tp = 오행 인덱스), 'time' = 시간대 문항(tm = 시간대 인덱스)
+// kind: 'el' = 캐릭터 문항(tp = 캐릭터 인덱스), 'time' = 시간대 문항(tm = 시간대 인덱스)
 const QS = [
   { kind: 'el', cat: '나는 어떤 사람', q: '처음 만난 팀원들과의 첫 음성 회의, 나는?', opts: [
     { t: '먼저 인사하고 분위기를 띄운다', tp: 1 },
@@ -505,10 +505,10 @@ const QS = [
     { t: '모두가 무리 없이 함께 갈 때', tp: 2 }
   ]},
   { kind: 'time', cat: '선호 시간', q: '팀 회의 시간을 내가 정할 수 있다면?', opts: [
-    { t: '오전 9시, 하루를 회의로 시작', tm: 0 },
-    { t: '오후 2시, 점심 먹고 한숨 돌린 뒤', tm: 1 },
-    { t: '저녁 7시, 하루 정리하면서', tm: 2 },
-    { t: '밤 10시, 이때 머리가 제일 잘 돌아감', tm: 3 }
+    { t: '☕ 오전 8시 · 모닝커피 들고 갓생 회의', tm: 0 },
+    { t: '🍚 저녁 8시 · 저녁 먹고 든든할 때', tm: 2 },
+    { t: '🛁 밤 10시 · 씻고 나와서 개운하게', tm: 2.5 },
+    { t: '🌙 새벽 1시 · 새벽 감성 풀가동, 아이디어 폭발', tm: 3 }
   ]},
   { kind: 'el', cat: '갈등 대처', q: '팀원의 말투에 서운함을 느꼈다. 나는?', opts: [
     { t: '시간을 두고 생각을 정리한 뒤 이야기한다', tp: 4 },
@@ -548,19 +548,19 @@ const QS = [
 ];
 
 // 궁합 풀이 문구
-const SAENG_TIP = [ // i가 (i+1)을 살려줌
-  '木의 아이디어에 火가 불을 붙여요. 새 기능 회의는 둘이 먼저 시작해보세요.',
-  '火가 띄운 분위기를 土가 단단히 받쳐줘요. 팀 이벤트나 회고는 둘이 함께 이끌어보세요.',
-  '土가 다진 팀워크 위에서 金이 마무리를 해내요. 일정 관리는 둘이 짝을 이뤄보세요.',
-  '金이 세운 기준 안에서 水가 깊이 파고들어요. 기술 검토는 둘이 함께 해보세요.',
-  '水의 깊은 생각이 木의 아이디어를 키워줘요. 기획 단계에서 둘이 자주 이야기해보세요.'
+const SAENG_TIP = [ // i가 (i+1)을 부스트
+  '제너레이터의 아이디어에 부스터가 시동을 걸어요. 새 기능 회의는 둘이 먼저 시작해보세요.',
+  '부스터가 올린 텐션을 레귤러가 안정적으로 받쳐줘요. 팀 회고나 이벤트는 둘이 함께 이끌어보세요.',
+  '레귤러가 다진 팀워크 위에서 밸리데이터가 마무리를 해내요. 일정 관리는 둘이 짝을 이뤄보세요.',
+  '밸리데이터가 세운 기준 안에서 딥러너가 깊이 파고들어요. 기술 검토는 둘이 함께 해보세요.',
+  '딥러너의 깊은 생각이 제너레이터의 아이디어를 키워줘요. 기획 단계에서 둘이 자주 이야기해보세요.'
 ];
-const GEUK_TIP = { // 'a-b' : a가 b를 극함
-  '0-2': '木의 새 아이디어가 土의 안정감을 흔들 수 있어요. 방향을 바꿀 땐 이유와 함께 미리 공유해주세요.',
-  '1-3': '火의 즉흥과 金의 원칙이 부딪히기 쉬워요. 정할 건 金이, 분위기는 火가 맡는 식으로 역할을 나눠보세요.',
-  '2-4': '土는 빨리 정리하고 싶고, 水는 더 생각할 시간이 필요해요. 결정 마감 시간을 같이 정해두세요.',
-  '3-0': '金의 기준이 木의 새싹을 너무 일찍 자를 수 있어요. 아이디어 단계에서는 평가를 잠시 미뤄주세요.',
-  '4-1': '火가 빠르게 말하면 水가 조용해질 수 있어요. 火는 질문으로 말을 맺고, 水는 텍스트로라도 의견을 남겨주세요.'
+const GEUK_TIP = { // 'a-b' : 서로 다른 속도와 방식
+  '0-2': '제너레이터의 새 아이디어가 레귤러의 안정감을 흔들 수 있어요. 방향을 바꿀 땐 이유와 함께 미리 공유해주세요.',
+  '1-3': '부스터의 즉흥과 밸리데이터의 원칙이 부딪히기 쉬워요. 정할 건 밸리데이터가, 분위기는 부스터가 맡는 식으로 역할을 나눠보세요.',
+  '2-4': '레귤러는 빨리 정리하고 싶고, 딥러너는 더 생각할 시간이 필요해요. 결정 마감 시간을 같이 정해두세요.',
+  '3-0': '밸리데이터의 검증이 제너레이터의 아이디어를 너무 일찍 자를 수 있어요. 아이디어 단계에서는 평가를 잠시 미뤄주세요.',
+  '4-1': '부스터가 빠르게 말하면 딥러너가 조용해질 수 있어요. 부스터는 질문으로 말을 맺고, 딥러너는 텍스트로라도 의견을 남겨주세요.'
 };
 const SAME_TIP = [
   '아이디어가 넘치는 조합이에요. 대신 “언제까지 정하자”는 마감을 꼭 같이 정하세요.',
@@ -570,18 +570,18 @@ const SAME_TIP = [
   '깊이 있는 조합이에요. 둘 다 조용할 수 있으니 정기 공유 시간을 잡아두세요.'
 ];
 const TEAM_MISSING = [
-  '木의 기운이 비어 있어요. 브레인스토밍 시간을 따로 잡아 새로운 시도를 해보세요.',
-  '火의 기운이 비어 있어요. 매일 아침 한 줄 인사를 팀 규칙으로 정해보세요.',
-  '土의 기운이 비어 있어요. 회의 끝에 “다들 괜찮아요?” 한마디를 꼭 챙겨주세요.',
-  '金의 기운이 비어 있어요. 일정표와 역할 분담표를 첫 주에 만들어두세요.',
-  '水의 기운이 비어 있어요. 중요한 결정은 하루 생각할 시간을 두고 내려보세요.'
+  '💡 제너레이터가 없어요. 브레인스토밍 시간을 따로 잡아 새로운 시도를 해보세요.',
+  '⚡ 부스터가 없어요. 매일 아침 한 줄 인사를 팀 규칙으로 정해보세요.',
+  '🫧 레귤러가 없어요. 회의 끝에 “다들 괜찮아요?” 한마디를 꼭 챙겨주세요.',
+  '✅ 밸리데이터가 없어요. 일정표와 역할 분담표를 첫 주에 만들어두세요.',
+  '🔍 딥러너가 없어요. 중요한 결정은 하루 생각할 시간을 두고 내려보세요.'
 ];
 const TEAM_MANY = [
-  '木의 기운이 강해요. 아이디어가 넘칠 수 있으니 우선순위를 정하는 시간을 가지세요.',
-  '火의 기운이 강해요. 열정이 부딪힐 수 있으니 의견 충돌 시 쉬어가는 규칙을 정하세요.',
-  '土의 기운이 강해요. 서로 배려하다 결정이 늦어질 수 있으니 결정 기한을 정하세요.',
-  '金의 기운이 강해요. 기준이 여러 개가 되지 않도록 팀 기준을 하나로 정리하세요.',
-  '水의 기운이 강해요. 각자 몰입하다 연락이 끊기지 않게 공유 시간을 정하세요.'
+  '💡 제너레이터가 많아요. 아이디어가 넘칠 수 있으니 우선순위를 정하는 시간을 가지세요.',
+  '⚡ 부스터가 많아요. 열정이 부딪힐 수 있으니 의견 충돌 시 쉬어가는 규칙을 정하세요.',
+  '🫧 레귤러가 많아요. 서로 배려하다 결정이 늦어질 수 있으니 결정 기한을 정하세요.',
+  '✅ 밸리데이터가 많아요. 기준이 여러 개가 되지 않도록 팀 기준을 하나로 정리하세요.',
+  '🔍 딥러너가 많아요. 각자 몰입하다 연락이 끊기지 않게 공유 시간을 정하세요.'
 ];
 
 const TOTAL = QS.length;
@@ -640,14 +640,14 @@ function compute() {
   let el = 0;
   s.forEach((v, i) => { if (v > s[el]) el = i; });
   const tied = s.map((v, i) => v === s[el] ? i : -1).filter(i => i >= 0);
-  if (tied.length > 1) { // 동점이면 마지막에 고른 답 쪽 오행을 우선
+  if (tied.length > 1) { // 동점이면 마지막에 고른 답 쪽 캐릭터를 우선
     for (let qi = TOTAL - 1; qi >= 0; qi--) {
       if (QS[qi].kind !== 'el') continue;
       const tp = QS[qi].opts[answers[qi]].tp;
       if (tied.includes(tp)) { el = tp; break; }
     }
   }
-  const tm = Math.round((2 * tms[0] + tms[1]) / 3); // 집중 시간에 가중치
+  const tm = Math.min(3, Math.max(0, Math.round((2 * tms[0] + tms[1]) / 3))); // 집중 시간에 가중치
   return { s, el, tm };
 }
 
@@ -659,7 +659,7 @@ function showResult() {
 
   const seal = $('res-seal'); seal.className = `seal big e${el}`; seal.textContent = e.ch;
   $('res-who').textContent = `${who.kisu}기 · ${who.team}팀 · ${who.name}`;
-  $('res-name').textContent = `${e.ch}(${e.kr}) · ${e.name}`;
+  $('res-name').textContent = `${e.ch} ${e.name}`;
   $('res-tags').innerHTML = `<span class="tag">${e.en}</span><span class="tag">${t.emo} ${t.name} · ${t.range}</span>`;
   $('res-dist').innerHTML = EL.map((x, i) =>
     `<div class="dist-row e${i}"><span class="seal sm e${i}">${x.ch}</span>` +
@@ -671,12 +671,12 @@ function showResult() {
   $('res-careful').textContent = e.careful;
   const from = (el + 4) % 5, to = (el + 1) % 5;
   $('res-rel').innerHTML =
-    `<div class="rel-item"><span class="seal e${from}">${EL[from].ch}</span><span><b>나를 살려주는 기운</b>${EL[from].name}</span></div>` +
-    `<div class="rel-item"><span class="seal e${to}">${EL[to].ch}</span><span><b>내가 살려주는 기운</b>${EL[to].name}</span></div>`;
+    `<div class="rel-item"><span class="seal e${from}">${EL[from].ch}</span><span><b>나를 부스트해주는 캐릭터</b>${EL[from].name}</span></div>` +
+    `<div class="rel-item"><span class="seal e${to}">${EL[to].ch}</span><span><b>내가 부스트해주는 캐릭터</b>${EL[to].name}</span></div>`;
 
   $('share-text').textContent =
-`[${who.team}팀] ${who.name}의 궁합 유형
-${e.ch}(${e.kr}) · ${e.name}  |  ${t.emo} ${t.name}
+`[${who.team}팀] ${who.name}의 케미 캐릭터
+${e.ch} ${e.name}  |  ${t.emo} ${t.name}
 
 🤝 나와 일할 때 이렇게 해주세요
 ${e.manual.map(x => '- ' + x).join('\n')}
@@ -693,7 +693,7 @@ function submit(e, t) {
   const el = $('sub-status'); el.hidden = false; el.textContent = '결과 저장 중...';
   fetch(WEBHOOK_URL, {
     method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ kisu: who.kisu, team: who.team, name: who.name, element: e.ch, time: t.name, el: mine.el, tm: mine.tm })
+    body: JSON.stringify({ kisu: who.kisu, team: who.team, name: who.name, element: e.name, time: t.name, el: mine.el, tm: mine.tm })
   }).then(() => { el.textContent = '결과가 저장됐어요.'; })
     .catch(() => { el.textContent = '저장에 실패했어요. 결과 확인과 복사는 그대로 할 수 있어요.'; });
 }
@@ -724,14 +724,14 @@ function pairInfo(A, B) {
   let label, text;
   if (r === 'saeng') {
     const [g, t] = (A.el + 1) % 5 === B.el ? [A, B] : [B, A];
-    label = '상생';
+    label = '시너지';
     text = `${esc(g.name)}님의 ${EL[g.el].gives} 덕분에 ${esc(t.name)}님이 더 힘을 내요. ${SAENG_TIP[g.el]}`;
   } else if (r === 'same') {
     label = '닮은꼴';
     text = SAME_TIP[A.el];
   } else {
     const [a, b] = (A.el + 2) % 5 === B.el ? [A, B] : [B, A];
-    label = '자극';
+    label = '성장형';
     text = `서로 달라서 배울 게 많은 사이예요. ${GEUK_TIP[`${a.el}-${b.el}`]}`;
   }
   const tmText = d === 0 ? '활동 시간대가 같아서 바로바로 소통하기 좋아요.'
@@ -773,7 +773,7 @@ function renderMembers() {
     `<div class="member" data-i="${i}">` +
     `<span class="seal sm e${m.el}">${EL[m.el].ch}</span>` +
     `<input id="m-name-${i}" data-f="name" placeholder="팀원 ${i + 1} 이름" value="${esc(m.name)}" aria-label="팀원 ${i + 1} 이름">` +
-    `<select id="m-el-${i}" class="sel-e" data-f="el" aria-label="팀원 ${i + 1} 오행">${EL.map((e, k) => `<option value="${k}"${k === m.el ? ' selected' : ''}>${e.ch} ${e.kr}</option>`).join('')}</select>` +
+    `<select id="m-el-${i}" class="sel-e" data-f="el" aria-label="팀원 ${i + 1} 캐릭터">${EL.map((e, k) => `<option value="${k}"${k === m.el ? ' selected' : ''}>${e.ch} ${e.short}</option>`).join('')}</select>` +
     `<select id="m-tm-${i}" class="sel-t" data-f="tm" aria-label="팀원 ${i + 1} 시간대">${TIMES.map((t, k) => `<option value="${k}"${k === m.tm ? ' selected' : ''}>${t.emo} ${t.name}</option>`).join('')}</select>` +
     `<button class="del" data-del="${i}" aria-label="팀원 ${i + 1} 삭제">×</button>` +
     `</div>`).join('');
@@ -801,7 +801,7 @@ function renderTeam() {
     if (fit > coreFit) { coreFit = fit; core = k; }
   }
 
-  let html = `<div class="card score-hero"><span class="eyebrow">우리 팀 궁합</span>` +
+  let html = `<div class="card score-hero"><span class="eyebrow">우리 팀 케미 점수</span>` +
     `<div class="score-num">${avg}<small>점</small></div><div class="score-grade">${grade(avg)}</div>` +
     `<div class="ohaeng">${EL.map((e, i) => `<span><span class="seal sm e${i}${counts[i] ? '' : ' empty'}">${e.ch}</span>${counts[i]}</span>`).join('')}</div></div>`;
 
@@ -812,13 +812,13 @@ function renderTeam() {
 
   const tips = [...counts.map((c, i) => c >= 3 ? TEAM_MANY[i] : null).filter(Boolean),
                 ...counts.map((c, i) => c === 0 ? TEAM_MISSING[i] : null).filter(Boolean).slice(0, 2)];
-  if (tips.length) html += `<div class="boxed careful"><p class="sec-label">우리 팀 오행 처방</p>${tips.map(x => `<p>${x}</p>`).join('')}</div>`;
+  if (tips.length) html += `<div class="boxed careful"><p class="sec-label">우리 팀 튜닝 팁</p>${tips.map(x => `<p>${x}</p>`).join('')}</div>`;
 
   html += `<div class="card"><details class="pairs"><summary>1:1 궁합 전체 보기 (${pairs.length}쌍)</summary>` +
     pairs.map(p => `<div class="pair">${pairHead(p)}<p>${p.text}</p><p class="note" style="margin-top:4px">${p.tmText}</p></div>`).join('') +
     `</details></div>`;
 
-  html += `<div class="boxed manual"><p class="sec-label">이제 팀끼리 이야기해봐요</p><p>1. 서로의 ‘나와 일할 때 이렇게 해주세요’를 돌아가며 읽기<br>2. 궁합 풀이와 오행 처방을 보며 이야기 나누기<br>3. 아래 ‘우리 팀 규칙 정하기’를 함께 채우고 팀 채널에 올리기</p></div>`;
+  html += `<div class="boxed manual"><p class="sec-label">이제 팀끼리 이야기해봐요</p><p>1. 서로의 ‘나와 일할 때 이렇게 해주세요’를 돌아가며 읽기<br>2. 궁합 풀이와 튜닝 팁을 보며 이야기 나누기<br>3. 아래 ‘우리 팀 규칙 정하기’를 함께 채우고 팀 채널에 올리기</p></div>`;
   out.innerHTML = html;
   teamCtx = { avg, grade: grade(avg), core, tips };
   syncRules();
