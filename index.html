@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>케미 러닝</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: single centered column (max 560px), one screen at a time — intro → quiz → 궁합 유형 → 팀 궁합 */
+  :root {
+    --bg: #F5F2FA;
+    --surface: #FFFFFF;
+    --surface2: #ECE6F5;
+    --line: #D6CCE6;
+    --fg: #221A2E;
+    --fg-sub: #6A5E7C;
+    --accent: #6A3FA6;
+    --accent-strong: #4E2A83;
+    --accent-soft: rgba(106,63,166,.10);
+    --on-accent: #FFFFFF;
+    --wood: #3E8E5A;  --fire: #D2493C;  --earth: #B07D2B;  --metal: #7B8494;  --water: #2F6DB5;
+    --font-display: 'Gowun Batang', 'Nanum Myeongjo', serif;
+    --font-body: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #17121F; --surface: #211A2C; --surface2: #2C2339; --line: #403452;
+      --fg: #EDE6F7; --fg-sub: #A99BBE; --accent: #B08AE8; --accent-strong: #CDB2F5;
+      --accent-soft: rgba(176,138,232,.15); --on-accent: #17121F;
+      --wood: #63B97F; --fire: #EE7468; --earth: #D6A651; --metal: #A3ABB9; --water: #6FA3E3;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #17121F; --surface: #211A2C; --surface2: #2C2339; --line: #403452;
+    --fg: #EDE6F7; --fg-sub: #A99BBE; --accent: #B08AE8; --accent-strong: #CDB2F5;
+    --accent-soft: rgba(176,138,232,.15); --on-accent: #17121F;
+    --wood: #63B97F; --fire: #EE7468; --earth: #D6A651; --metal: #A3ABB9; --water: #6FA3E3;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--fg);
+    display: flex;
+    justify-content: center;
+    padding-inline: 18px;
+    padding-block: 40px 56px;
+    line-height: 1.6;
+  }
+  .wrap { width: 100%; max-width: 560px; min-width: 0; }
+  .screen[hidden] { display: none; }
+
+  .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; color: var(--accent); text-transform: uppercase; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+  h1, h2, h3 { font-family: var(--font-display); font-weight: 700; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+
+  button, select, input { font-family: var(--font-body); }
+  button { cursor: pointer; }
+  button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn {
+    width: 100%; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 700;
+    border: 1.5px solid var(--accent); background: var(--accent); color: var(--on-accent); transition: opacity .15s;
+  }
+  .btn:hover { opacity: .88; }
+  .btn.ghost { background: transparent; color: var(--accent); }
+  .link-btn { background: none; border: none; color: var(--fg-sub); font-size: 13px; padding: 8px 0; text-decoration: underline; text-underline-offset: 3px; }
+  .stack { display: grid; gap: 10px; }
+  .note { font-size: 12.5px; color: var(--fg-sub); }
+
+  /* 오행 글자 도장 */
+  .seal {
+    display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 10px;
+    font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1;
+    color: var(--c); border: 2px solid var(--c); background: var(--surface);
+  }
+  .seal.big { width: 96px; height: 96px; font-size: 56px; border-width: 3px; border-radius: 18px; transform: rotate(-4deg); box-shadow: 0 0 0 6px var(--surface), 0 0 0 7px var(--line); }
+  .seal.sm { width: 30px; height: 30px; font-size: 16px; border-radius: 7px; border-width: 1.5px; }
+  .e0 { --c: var(--wood); } .e1 { --c: var(--fire); } .e2 { --c: var(--earth); } .e3 { --c: var(--metal); } .e4 { --c: var(--water); }
+
+  /* INTRO */
+  .intro-top { display: grid; gap: 12px; margin-bottom: 26px; }
+  .intro-top h1 { font-size: 34px; line-height: 1.3; }
+  .intro-sub { color: var(--fg-sub); }
+  .lineup { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .field { display: grid; gap: 6px; min-width: 0; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-family: var(--font-mono); font-size: 11px; color: var(--fg-sub); letter-spacing: .05em; }
+  .field input {
+    width: 100%; padding: 11px 14px; border-radius: 9px; font-size: 15px;
+    border: 1.5px solid var(--line); background: var(--surface2); color: var(--fg);
+  }
+  .err { color: var(--fire); font-size: 13px; margin: -6px 0 12px; }
+
+  /* QUIZ */
+  .prog { display: grid; gap: 8px; margin-bottom: 26px; }
+  .prog-meta { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--fg-sub); }
+  .track { height: 4px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .fill { height: 100%; background: var(--accent); transition: width .35s ease; }
+  .q-cat { display: inline-block; font-size: 12px; font-weight: 500; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 2px 10px; }
+  .q-text { font-size: 21px; font-weight: 700; line-height: 1.5; margin: 12px 0 20px; text-wrap: balance; }
+  .opts { display: grid; gap: 9px; }
+  .opt {
+    display: flex; gap: 12px; align-items: flex-start; text-align: left; width: 100%;
+    padding: 13px 15px; border-radius: 11px; font-size: 14.5px; line-height: 1.55;
+    background: var(--surface); color: var(--fg); border: 1.5px solid var(--line); transition: border-color .15s, background .15s;
+  }
+  .opt:hover, .opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+  .opt-key { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--accent); background: var(--surface2); border-radius: 5px; padding: 2px 7px; margin-top: 2px; flex-shrink: 0; }
+  .back { margin-top: 22px; padding: 10px 16px; border-radius: 9px; font-size: 13px; background: var(--surface2); color: var(--fg-sub); border: 1px solid var(--line); }
+
+  /* RESULT */
+  .res-hero { text-align: center; display: grid; gap: 10px; justify-items: center; margin-bottom: 24px; }
+  .res-who { font-family: var(--font-mono); font-size: 12px; color: var(--fg-sub); margin-top: 8px; }
+  .res-name { font-size: 30px; }
+  .res-tags { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .tag { font-size: 12.5px; padding: 3px 12px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); border: 1px solid var(--line); }
+  .sections { display: grid; gap: 22px; }
+  .sec-label { font-family: var(--font-mono); font-size: 11px; color: var(--fg-sub); letter-spacing: .06em; margin-bottom: 8px; }
+  .desc { font-size: 14.5px; line-height: 1.85; }
+  .traits { display: flex; flex-wrap: wrap; gap: 6px; }
+  .trait { font-size: 12.5px; padding: 4px 11px; border-radius: 999px; background: var(--surface2); border: 1px solid var(--line); }
+
+  .dist { display: grid; gap: 7px; }
+  .dist-row { display: grid; grid-template-columns: 30px 1fr 40px; align-items: center; gap: 10px; }
+  .dist-bar { height: 9px; border-radius: 5px; background: var(--surface2); overflow: hidden; }
+  .dist-bar i { display: block; height: 100%; background: var(--c); }
+  .dist-val { font-family: var(--font-mono); font-size: 12px; text-align: right; color: var(--fg-sub); font-variant-numeric: tabular-nums; }
+
+  .boxed { border-radius: 12px; padding: 15px 18px; }
+  .manual { background: var(--accent-soft); border: 1px solid var(--accent); }
+  .manual ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+  .careful { background: var(--surface2); border: 1px dashed var(--line); font-size: 14px; }
+  .rel-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .rel-item { display: flex; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: 11px; font-size: 13px; line-height: 1.5; min-width: 0; }
+  .rel-item b { display: block; font-size: 11px; color: var(--fg-sub); font-weight: 500; font-family: var(--font-mono); }
+
+  .share { margin-top: 24px; }
+  .share pre {
+    margin: 0 0 10px; white-space: pre-wrap; word-break: keep-all; font-family: var(--font-mono);
+    font-size: 12px; line-height: 1.7; background: var(--surface2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 14px; color: var(--fg); overflow-x: auto;
+  }
+  .sub-status { font-size: 12.5px; color: var(--fg-sub); text-align: center; margin-top: 10px; }
+
+  /* TEAM 궁합 */
+  .members { display: grid; gap: 8px; margin: 18px 0 10px; }
+  .member { display: grid; grid-template-columns: 30px minmax(0, 1fr) 92px 92px 28px; gap: 8px; align-items: center; padding: 9px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 11px; }
+  .member input, .member select {
+    width: 100%; min-width: 0; padding: 8px 9px; border-radius: 8px; font-size: 13.5px;
+    border: 1px solid var(--line); background: var(--surface2); color: var(--fg);
+  }
+  .member .del { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--line); background: transparent; color: var(--fg-sub); font-size: 15px; line-height: 1; }
+  .add-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .team-out { display: grid; gap: 14px; margin-top: 20px; }
+  .score-hero { text-align: center; display: grid; gap: 6px; justify-items: center; padding: 26px 20px; }
+  .score-num { font-family: var(--font-display); font-size: 56px; font-weight: 700; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .score-num small { font-size: 20px; color: var(--fg-sub); }
+  .score-grade { font-family: var(--font-display); font-size: 20px; }
+  .ohaeng { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .ohaeng span { display: grid; justify-items: center; gap: 3px; font-family: var(--font-mono); font-size: 11px; color: var(--fg-sub); }
+  .seal.empty { opacity: .3; border-style: dashed; }
+  .team-out p { font-size: 14px; line-height: 1.75; }
+  .pair-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .pair-score { margin-left: auto; font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .rel-chip { font-size: 11.5px; font-weight: 500; padding: 1px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); }
+  details.pairs summary { cursor: pointer; font-size: 14px; font-weight: 700; padding: 4px 0; }
+  details.pairs .pair { padding: 12px 0; border-top: 1px solid var(--line); }
+  details.pairs .pair:first-of-type { margin-top: 10px; }
+
+  .load-box { margin-top: 16px; display: grid; gap: 10px; padding: 16px 18px; }
+  .load-box .sec-label { margin: 0; }
+  .load-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; }
+  .load-row input { min-width: 0; padding: 10px 12px; border-radius: 9px; font-size: 14px; border: 1.5px solid var(--line); background: var(--surface2); color: var(--fg); }
+  .load-row .btn { width: auto; padding: 10px 18px; font-size: 14px; }
+
+  /* 팀 규칙 */
+  .rules { margin-top: 26px; display: grid; gap: 18px; }
+  .rules h2 { font-size: 24px; margin-top: 4px; }
+  .rfield { display: grid; gap: 6px; min-width: 0; }
+  .rfield > label { font-size: 13.5px; font-weight: 700; }
+  .rfield > label em { font-style: normal; color: var(--accent); margin-left: 2px; }
+  .rfield input, .rfield textarea {
+    width: 100%; padding: 10px 12px; border-radius: 9px; font-size: 14px; line-height: 1.55;
+    border: 1.5px solid var(--line); background: var(--surface2); color: var(--fg); font-family: var(--font-body); resize: vertical;
+  }
+  .rfield textarea { min-height: 64px; }
+  .rrow { display: grid; grid-template-columns: 110px 1fr; gap: 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip-btn {
+    font-size: 12.5px; padding: 4px 11px; border-radius: 999px; border: 1px dashed var(--accent);
+    background: transparent; color: var(--accent-strong);
+  }
+  .chip-btn:hover { background: var(--accent-soft); }
+  .roles { display: grid; gap: 6px; }
+  .role { display: grid; grid-template-columns: minmax(0, 110px) 1fr; gap: 8px; align-items: center; font-size: 13.5px; }
+  .role span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rules-err { color: var(--fire); font-size: 13px; }
+  #rules-preview { margin: 0; }
+
+  @media (max-width: 460px) {
+    .rrow { grid-template-columns: 1fr; }
+    .intro-top h1 { font-size: 28px; }
+    .fields { grid-template-columns: 1fr; }
+    .rel-pair { grid-template-columns: 1fr; }
+    .member { grid-template-columns: 30px minmax(0, 1fr) 28px; }
+    .member select { grid-column: 2 / 3; }
+    .member .sel-e { grid-row: 2; } .member .sel-t { grid-row: 3; }
+    .member .del { grid-row: 1; grid-column: 3; }
+  }
+  @media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+</style>
+
+<div class="wrap">
+
+  <!-- INTRO -->
+  <section id="sc-intro" class="screen">
+    <div class="intro-top">
+      <span class="eyebrow">Codeit Sprint · AI Engineer</span>
+      <h1>케미 러닝 <span style="font-size:.5em;color:var(--fg-sub);font-weight:400;font-family:var(--font-mono)">Chemi-Learning</span></h1>
+      <p class="intro-sub">질문 12개로 알아보는 나의 협업 유형과 우리 팀 궁합.<br>프로젝트 시작 전, 우리 팀 케미부터 학습시켜볼까요?</p>
+      <div class="lineup" aria-hidden="true">
+        <span class="seal e0">木</span><span class="seal e1">火</span><span class="seal e2">土</span><span class="seal e3">金</span><span class="seal e4">水</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="fields">
+        <div class="field">
+          <label for="inp-kisu">기수</label>
+          <input id="inp-kisu" type="number" min="1" max="99" placeholder="예) 15" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="inp-team">팀</label>
+          <input id="inp-team" type="number" min="1" max="20" placeholder="예) 3" inputmode="numeric">
+        </div>
+        <div class="field full">
+          <label for="inp-name">이름</label>
+          <input id="inp-name" type="text" placeholder="이름을 입력해주세요">
+        </div>
+      </div>
+      <p class="err" id="err" hidden>기수, 팀, 이름을 모두 입력해주세요.</p>
+      <div class="stack">
+        <button class="btn" id="btn-start">내 궁합 유형 알아보기</button>
+        <button class="btn ghost" id="btn-team-open">바로 팀 궁합 보기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="sc-quiz" class="screen" hidden>
+    <div class="prog">
+      <div class="prog-meta"><span id="prog-label">질문</span><span id="prog-count">1 / 12</span></div>
+      <div class="track"><div class="fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+    <span class="q-cat" id="q-cat"></span>
+    <p class="q-text" id="q-text"></p>
+    <div class="opts" id="opts"></div>
+    <button class="back" id="btn-back">← 이전 질문</button>
+  </section>
+
+  <!-- RESULT -->
+  <section id="sc-result" class="screen" hidden>
+    <div class="res-hero">
+      <span class="eyebrow">나의 궁합 유형</span>
+      <span class="seal big" id="res-seal"></span>
+      <span class="res-who" id="res-who"></span>
+      <h2 class="res-name" id="res-name"></h2>
+      <div class="res-tags" id="res-tags"></div>
+    </div>
+    <div class="card sections">
+      <div>
+        <p class="sec-label">나의 오행 분포</p>
+        <div class="dist" id="res-dist"></div>
+      </div>
+      <div>
+        <p class="sec-label">이런 팀원이에요</p>
+        <p class="desc" id="res-desc"></p>
+      </div>
+      <div class="traits" id="res-traits"></div>
+      <div class="boxed manual">
+        <p class="sec-label">나와 일할 때 이렇게 해주세요</p>
+        <ul id="res-manual"></ul>
+      </div>
+      <div class="boxed careful">
+        <p class="sec-label">이럴 땐 조금 힘들어요</p>
+        <span id="res-careful"></span>
+      </div>
+      <div>
+        <p class="sec-label">나와 잘 맞는 기운</p>
+        <div class="rel-pair" id="res-rel"></div>
+      </div>
+    </div>
+    <div class="share">
+      <p class="sec-label">팀 채널에 공유하기</p>
+      <pre id="share-text"></pre>
+      <div class="stack">
+        <button class="btn" id="btn-copy">결과 복사하기</button>
+        <button class="btn ghost" id="btn-team-from-result">팀 궁합 보러 가기</button>
+        <button class="link-btn" id="btn-retry">다시 테스트하기</button>
+      </div>
+      <p class="sub-status" id="sub-status" hidden></p>
+    </div>
+  </section>
+
+  <!-- TEAM 궁합 -->
+  <section id="sc-team" class="screen" hidden>
+    <span class="eyebrow">Team 궁합</span>
+    <h1 style="font-size:30px;margin-top:8px">우리 팀 궁합 보기</h1>
+    <p class="intro-sub" style="margin-top:8px">팀원들이 공유한 결과를 보고 이름, 오행, 시간대를 입력하세요.</p>
+    <p class="note" id="team-sample-note" style="margin-top:6px" hidden>지금은 예시 팀이 채워져 있어요. 우리 팀 정보로 바꿔보세요.</p>
+    <div class="card load-box" id="load-box" hidden>
+      <p class="sec-label">팀원 결과 불러오기</p>
+      <div class="load-row">
+        <input id="load-kisu" type="number" placeholder="기수" aria-label="기수" inputmode="numeric">
+        <input id="load-team" type="number" placeholder="팀" aria-label="팀" inputmode="numeric">
+        <button class="btn" id="btn-load">불러오기</button>
+      </div>
+      <p class="note" id="load-status">팀원들이 테스트를 마쳤다면 기수와 팀을 넣고 불러오세요.</p>
+    </div>
+    <div class="members" id="members"></div>
+    <div class="add-row">
+      <button class="link-btn" id="btn-add">+ 팀원 추가</button>
+      <span class="note" id="member-count"></span>
+    </div>
+    <div class="team-out" id="team-out"></div>
+
+    <div class="card rules" id="rules">
+      <div>
+        <span class="eyebrow">Team Rules</span>
+        <h2>우리 팀 규칙 정하기</h2>
+        <p class="note" style="margin-top:6px">궁합 결과를 보면서 함께 채워요. 추천 문구를 누르면 바로 들어가요. <b style="color:var(--accent)">★</b> 항목은 꼭 채워주세요.</p>
+      </div>
+      <div class="rrow">
+        <div class="rfield"><label for="r-team">팀 번호</label><input id="r-team" data-r="team" placeholder="예) 3"></div>
+        <div class="rfield"><label for="r-name">팀명</label><input id="r-name" data-r="name" placeholder="예) 상생연구소"></div>
+      </div>
+      <div class="rfield">
+        <label for="r-goal">🎯 우리 팀 목표 (한 줄)</label>
+        <input id="r-goal" data-r="goal" placeholder="예) 끝까지 다같이 완주하고, 각자 포트폴리오 하나씩 챙기기">
+      </div>
+      <div class="rfield">
+        <label for="r-core">⏰ 코어타임</label>
+        <input id="r-core" data-r="core" placeholder="팀원 입력 후 추천 코어타임이 채워져요">
+      </div>
+      <div class="rfield">
+        <label for="r-reply">💬 응답 약속</label>
+        <textarea id="r-reply" data-r="reply" placeholder="메시지에 언제까지 답할지 정해요"></textarea>
+        <div class="chips" data-for="r-reply">
+          <button type="button" class="chip-btn">코어타임 내 2시간 안에 답하기</button>
+          <button type="button" class="chip-btn">늦어질 땐 이모지라도 남기기</button>
+          <button type="button" class="chip-btn">밤 11시 이후 연락은 급할 때만</button>
+        </div>
+      </div>
+      <div class="rfield">
+        <label>👥 역할 분담</label>
+        <div class="roles" id="roles"></div>
+      </div>
+      <div class="rfield">
+        <label for="r-disagree">🤝 의견이 다를 때<em>★</em></label>
+        <textarea id="r-disagree" data-r="disagree" placeholder="의견이 갈리면 어떻게 정할지 정해요"></textarea>
+        <div class="chips" data-for="r-disagree">
+          <button type="button" class="chip-btn">각자 근거를 들고 이야기하기</button>
+          <button type="button" class="chip-btn">30분 안에 안 정해지면 투표</button>
+          <button type="button" class="chip-btn">둘 다 실험해보고 결과로 정하기</button>
+          <button type="button" class="chip-btn">사람이 아니라 의견에 대해 말하기</button>
+        </div>
+      </div>
+      <div class="rfield">
+        <label for="r-hurt">🚨 서운하거나 힘들 때<em>★</em></label>
+        <textarea id="r-hurt" data-r="hurt" placeholder="마음이 상했을 때 어떻게 말할지 정해요"></textarea>
+        <div class="chips" data-for="r-hurt">
+          <button type="button" class="chip-btn">그날 안에 DM으로 말하기</button>
+          <button type="button" class="chip-btn">말하기 어려우면 팀장에게 먼저</button>
+          <button type="button" class="chip-btn">“나는 ~해서 힘들었어요”로 말하기</button>
+          <button type="button" class="chip-btn">주 1회 회고 때 편하게 꺼내기</button>
+        </div>
+      </div>
+      <div class="rfield">
+        <label for="r-absent">🙋 빠지거나 늦을 때</label>
+        <textarea id="r-absent" data-r="absent" placeholder="자리를 비울 때 어떻게 알릴지 정해요"></textarea>
+        <div class="chips" data-for="r-absent">
+          <button type="button" class="chip-btn">최소 하루 전 팀 채널에 공유</button>
+          <button type="button" class="chip-btn">맡은 일 진행 상황 남기고 빠지기</button>
+          <button type="button" class="chip-btn">급한 일이면 나중에라도 바로 알리기</button>
+        </div>
+      </div>
+      <div class="rfield">
+        <label for="r-extra">✨ 우리 팀만의 규칙</label>
+        <textarea id="r-extra" data-r="extra" placeholder="오행 처방을 참고해 하나 더 정해봐요"></textarea>
+        <div class="chips" id="extra-chips" data-for="r-extra"></div>
+      </div>
+      <div>
+        <p class="sec-label">팀 채널에 올릴 규칙</p>
+        <pre class="share" id="rules-preview" style="white-space:pre-wrap;word-break:keep-all;font-family:var(--font-mono);font-size:12px;line-height:1.7;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:0"></pre>
+      </div>
+      <p class="rules-err" id="rules-err" hidden>★ 항목(의견이 다를 때, 서운하거나 힘들 때)을 채워주세요.</p>
+      <button class="btn" id="btn-rules-copy">팀 규칙 복사하기</button>
+    </div>
+
+    <button class="link-btn" id="btn-team-back" style="margin-top:18px">← 처음으로</button>
+  </section>
+
+</div>
+
+<script>
+// 구글 시트 저장용 Apps Script URL. 비워두면 저장 없이 결과만 보여줍니다.
+const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxJz9EYNKtnUL9Vh_LEvhUrMJkRpi5y8q59XY8wJ7C3Qe85eU2ygqncUBPcx5sgVRoA/exec';
+
+// 오행 인덱스: 0 木 · 1 火 · 2 土 · 3 金 · 4 水
+// 상생: 木→火→土→金→水→木  (i → (i+1)%5)
+// 상극: 木→土, 火→金, 土→水, 金→木, 水→火  (i → (i+2)%5)
+const EL = [
+  {
+    ch: '木', kr: '나무', name: '틔우는 사람', en: 'SPROUT', gives: '새로운 아이디어',
+    desc: '늘 “이렇게 해보면 어때요?”를 먼저 꺼내는 팀원이에요. 새로운 시도를 좋아하고, 막힌 상황에서도 다른 길을 찾아냅니다. 팀에 성장의 기운을 불어넣는 사람이에요.',
+    traits: ['아이디어 뱅크', '도전', '성장 지향', '유연한 발상'],
+    manual: ['아이디어를 낼 때는 바로 평가하기보다 일단 들어봐 주세요', '방향이 바뀌면 이유와 함께 알려주세요', '새로운 시도를 해볼 기회를 주면 신나게 일해요'],
+    careful: '“원래 하던 대로 하죠”로 아이디어가 바로 닫힐 때'
+  },
+  {
+    ch: '火', kr: '불', name: '밝히는 사람', en: 'SPARK', gives: '에너지',
+    desc: '팀에 활기를 불어넣는 분위기 메이커예요. 먼저 인사하고, 솔직하게 표현하고, 다같이 으쌰으쌰하는 순간을 만듭니다. 이 사람이 있으면 팀 채널이 조용할 틈이 없어요.',
+    traits: ['분위기 메이커', '솔직함', '추진력', '표현력'],
+    manual: ['반응해주면 힘이 나요. 이모지 하나도 좋아요', '제가 너무 앞서가면 “잠깐!” 하고 불러주세요', '불편한 게 있으면 돌려 말하지 말고 바로 말해주세요'],
+    careful: '팀 채널이 조용하고 아무도 반응하지 않을 때'
+  },
+  {
+    ch: '土', kr: '흙', name: '품는 사람', en: 'ANCHOR', gives: '안정감',
+    desc: '팀원 모두가 편하게 기댈 수 있는 사람이에요. 잘 들어주고, 빈틈을 조용히 메우고, 갈등이 생기면 양쪽을 이어줍니다. 팀이 흔들리지 않게 받쳐주는 중심이에요.',
+    traits: ['경청', '배려', '중재자', '팀의 버팀목'],
+    manual: ['제가 괜찮다고 해도 한 번 더 물어봐 주세요', '결정이 필요할 땐 의견을 직접 물어봐 주세요', '고맙다는 말 한마디가 큰 힘이 돼요'],
+    careful: '팀 분위기가 날카로워지고 서로 말을 아낄 때'
+  },
+  {
+    ch: '金', kr: '쇠', name: '다듬는 사람', en: 'REFINE', gives: '기준과 마무리',
+    desc: '기준을 세우고 끝까지 지키는 팀원이에요. 일정, 역할, 품질을 챙기고 흐지부지되는 걸 싫어합니다. 이 사람 덕분에 팀 결과물이 제때, 제대로 완성돼요.',
+    traits: ['책임감', '일정 관리', '결단력', '마무리 장인'],
+    manual: ['맡은 일의 진행 상황을 중간중간 공유해주세요', '일정이 밀릴 것 같으면 미리 알려주세요', '제 피드백은 사람이 아니라 결과물에 대한 거예요'],
+    careful: '정한 약속이나 마감이 말없이 지켜지지 않을 때'
+  },
+  {
+    ch: '水', kr: '물', name: '헤아리는 사람', en: 'DEPTH', gives: '깊은 통찰',
+    desc: '조용하지만 깊이 생각하는 팀원이에요. 상황을 관찰하고, 근거를 찾아보고, 정리된 생각을 꺼냅니다. 어려운 문제가 생겼을 때 팀이 가장 먼저 찾게 되는 사람이에요.',
+    traits: ['깊은 사고', '관찰력', '유연함', '근거 중심'],
+    manual: ['바로 대답하지 않아도 생각 중이에요. 조금만 기다려 주세요', '회의 안건은 미리 공유해주면 더 좋은 의견을 낼 수 있어요', '텍스트로 의견을 남기는 것도 편하게 받아주세요'],
+    careful: '생각할 틈 없이 즉석에서 결정을 내려야 할 때'
+  }
+];
+
+const TIMES = [
+  { emo: '🌅', name: '아침형', range: '06~11시' },
+  { emo: '☀️', name: '낮형', range: '11~17시' },
+  { emo: '🌇', name: '저녁형', range: '17~22시' },
+  { emo: '🌙', name: '올빼미형', range: '22시 이후' }
+];
+
+// kind: 'el' = 오행 문항(tp = 오행 인덱스), 'time' = 시간대 문항(tm = 시간대 인덱스)
+const QS = [
+  { kind: 'el', cat: '나는 어떤 사람', q: '처음 만난 팀원들과의 첫 음성 회의, 나는?', opts: [
+    { t: '먼저 인사하고 분위기를 띄운다', tp: 1 },
+    { t: '조용히 듣다가 필요한 말만 한다', tp: 4 },
+    { t: '이번 프로젝트로 해보고 싶은 아이디어부터 꺼낸다', tp: 0 },
+    { t: '다른 사람 말에 맞장구치며 들어준다', tp: 2 },
+    { t: '일정과 진행 방식부터 정리하자고 한다', tp: 3 }
+  ]},
+  { kind: 'el', cat: '나는 어떤 사람', q: '주변 사람들이 나를 주로 이렇게 말한다.', opts: [
+    { t: '“믿고 맡길 수 있는 사람”', tp: 3 },
+    { t: '“곁에 있으면 편한 사람”', tp: 2 },
+    { t: '“생각이 깊은 사람”', tp: 4 },
+    { t: '“늘 새로운 걸 해보는 사람”', tp: 0 },
+    { t: '“같이 있으면 에너지가 생기는 사람”', tp: 1 }
+  ]},
+  { kind: 'time', cat: '선호 시간', q: '나는 언제 가장 집중이 잘 될까?', opts: [
+    { t: '🌅 아침 (06~11시)', tm: 0 },
+    { t: '☀️ 낮 (11~17시)', tm: 1 },
+    { t: '🌇 저녁 (17~22시)', tm: 2 },
+    { t: '🌙 밤 (22시 이후)', tm: 3 }
+  ]},
+  { kind: 'el', cat: '팀플 태도', q: '역할을 나눌 때 내가 끌리는 일은?', opts: [
+    { t: '팀원 사이를 연결하고 빈틈을 메우는 일', tp: 2 },
+    { t: '기획하고 새로운 기능을 실험하는 일', tp: 0 },
+    { t: '어려운 기술 문제를 깊게 파는 일', tp: 4 },
+    { t: '발표하고 팀 분위기를 챙기는 일', tp: 1 },
+    { t: '일정 관리, 코드 리뷰, 품질 체크', tp: 3 }
+  ]},
+  { kind: 'el', cat: '팀플 태도', q: '팀원 한 명이 이틀째 팀 채널에서 조용하다.', opts: [
+    { t: '바로 DM으로 “괜찮아요?” 안부를 묻는다', tp: 1 },
+    { t: '진행 상황을 공유해달라고 요청한다', tp: 3 },
+    { t: '사정이 있겠지 하고, 그 사람 작업 상황을 조용히 살펴본다', tp: 4 },
+    { t: '부담 안 되게 살짝 챙겨본다', tp: 2 },
+    { t: '“이거 같이 해볼래요?” 함께할 거리를 제안한다', tp: 0 }
+  ]},
+  { kind: 'el', cat: '팀플 태도', q: '프로젝트 중 가장 신나는 순간은?', opts: [
+    { t: '계획대로 착착 마무리될 때', tp: 3 },
+    { t: '아이디어가 처음 형태를 갖출 때', tp: 0 },
+    { t: '팀이 다같이 으쌰으쌰할 때', tp: 1 },
+    { t: '어려운 문제의 답을 찾았을 때', tp: 4 },
+    { t: '모두가 무리 없이 함께 갈 때', tp: 2 }
+  ]},
+  { kind: 'time', cat: '선호 시간', q: '팀 회의 시간을 내가 정할 수 있다면?', opts: [
+    { t: '오전 9시, 하루를 회의로 시작', tm: 0 },
+    { t: '오후 2시, 점심 먹고 한숨 돌린 뒤', tm: 1 },
+    { t: '저녁 7시, 하루 정리하면서', tm: 2 },
+    { t: '밤 10시, 이때 머리가 제일 잘 돌아감', tm: 3 }
+  ]},
+  { kind: 'el', cat: '갈등 대처', q: '팀원의 말투에 서운함을 느꼈다. 나는?', opts: [
+    { t: '시간을 두고 생각을 정리한 뒤 이야기한다', tp: 4 },
+    { t: '그 자리에서 솔직하게 말한다', tp: 1 },
+    { t: '다른 일에 집중하며 털어버린다', tp: 0 },
+    { t: '있었던 일을 정리해서 차분하게 말한다', tp: 3 },
+    { t: '내가 오해한 건 아닌지 먼저 생각해본다', tp: 2 }
+  ]},
+  { kind: 'el', cat: '갈등 대처', q: '팀 안에서 두 사람이 부딪혔다. 나는?', opts: [
+    { t: '양쪽 이야기를 들어주며 중재한다', tp: 2 },
+    { t: '새로운 해결책을 내서 분위기를 바꾼다', tp: 0 },
+    { t: '역할과 규칙을 다시 정리하자고 한다', tp: 3 },
+    { t: '“다같이 터놓고 얘기해요!” 자리를 만든다', tp: 1 },
+    { t: '한 발 떨어져서 원인을 살펴본다', tp: 4 }
+  ]},
+  { kind: 'el', cat: '갈등 대처', q: '마감 직전, 팀원이 맡은 일을 못 끝냈다.', opts: [
+    { t: '“같이 하자!” 바로 뛰어든다', tp: 1 },
+    { t: '막힌 원인을 같이 파본다', tp: 4 },
+    { t: '우선순위를 다시 정해서 범위를 조정한다', tp: 3 },
+    { t: '다른 방법이 없는지 빠르게 찾는다', tp: 0 },
+    { t: '괜찮다고 다독이고 일을 나눠서 한다', tp: 2 }
+  ]},
+  { kind: 'el', cat: '의견 조율', q: '내 의견과 팀원의 의견이 다르다.', opts: [
+    { t: '근거 자료를 찾아본 뒤 의견을 낸다', tp: 4 },
+    { t: '성능, 일정 같은 기준을 정해서 비교한다', tp: 3 },
+    { t: '두 의견을 섞은 제3의 안을 만든다', tp: 0 },
+    { t: '팀 분위기를 생각해서 맞춰주는 편이다', tp: 2 },
+    { t: '내 의견을 열정적으로 설득한다', tp: 1 }
+  ]},
+  { kind: 'el', cat: '의견 조율', q: '회의에서 결정이 안 나고 계속 길어진다.', opts: [
+    { t: '“투표로 정해요!”', tp: 1 },
+    { t: '모두가 납득할 때까지 기다린다', tp: 2 },
+    { t: '“둘 다 빠르게 해보고 비교해요”', tp: 0 },
+    { t: '논점을 정리해서 다음 회의에 다시 다룬다', tp: 4 },
+    { t: '“오늘 ○시까지는 결정합시다”', tp: 3 }
+  ]}
+];
+
+// 궁합 풀이 문구
+const SAENG_TIP = [ // i가 (i+1)을 살려줌
+  '木의 아이디어에 火가 불을 붙여요. 새 기능 회의는 둘이 먼저 시작해보세요.',
+  '火가 띄운 분위기를 土가 단단히 받쳐줘요. 팀 이벤트나 회고는 둘이 함께 이끌어보세요.',
+  '土가 다진 팀워크 위에서 金이 마무리를 해내요. 일정 관리는 둘이 짝을 이뤄보세요.',
+  '金이 세운 기준 안에서 水가 깊이 파고들어요. 기술 검토는 둘이 함께 해보세요.',
+  '水의 깊은 생각이 木의 아이디어를 키워줘요. 기획 단계에서 둘이 자주 이야기해보세요.'
+];
+const GEUK_TIP = { // 'a-b' : a가 b를 극함
+  '0-2': '木의 새 아이디어가 土의 안정감을 흔들 수 있어요. 방향을 바꿀 땐 이유와 함께 미리 공유해주세요.',
+  '1-3': '火의 즉흥과 金의 원칙이 부딪히기 쉬워요. 정할 건 金이, 분위기는 火가 맡는 식으로 역할을 나눠보세요.',
+  '2-4': '土는 빨리 정리하고 싶고, 水는 더 생각할 시간이 필요해요. 결정 마감 시간을 같이 정해두세요.',
+  '3-0': '金의 기준이 木의 새싹을 너무 일찍 자를 수 있어요. 아이디어 단계에서는 평가를 잠시 미뤄주세요.',
+  '4-1': '火가 빠르게 말하면 水가 조용해질 수 있어요. 火는 질문으로 말을 맺고, 水는 텍스트로라도 의견을 남겨주세요.'
+};
+const SAME_TIP = [
+  '아이디어가 넘치는 조합이에요. 대신 “언제까지 정하자”는 마감을 꼭 같이 정하세요.',
+  '에너지가 두 배예요. 감정이 과열될 땐 10분 쉬었다가 다시 이야기하세요.',
+  '서로 편안한 조합이에요. 결정이 늦어질 수 있으니 결정 담당을 정해두세요.',
+  '완성도가 높은 조합이에요. 서로 기준이 다를 땐 문서로 맞춰두세요.',
+  '깊이 있는 조합이에요. 둘 다 조용할 수 있으니 정기 공유 시간을 잡아두세요.'
+];
+const TEAM_MISSING = [
+  '木의 기운이 비어 있어요. 브레인스토밍 시간을 따로 잡아 새로운 시도를 해보세요.',
+  '火의 기운이 비어 있어요. 매일 아침 한 줄 인사를 팀 규칙으로 정해보세요.',
+  '土의 기운이 비어 있어요. 회의 끝에 “다들 괜찮아요?” 한마디를 꼭 챙겨주세요.',
+  '金의 기운이 비어 있어요. 일정표와 역할 분담표를 첫 주에 만들어두세요.',
+  '水의 기운이 비어 있어요. 중요한 결정은 하루 생각할 시간을 두고 내려보세요.'
+];
+const TEAM_MANY = [
+  '木의 기운이 강해요. 아이디어가 넘칠 수 있으니 우선순위를 정하는 시간을 가지세요.',
+  '火의 기운이 강해요. 열정이 부딪힐 수 있으니 의견 충돌 시 쉬어가는 규칙을 정하세요.',
+  '土의 기운이 강해요. 서로 배려하다 결정이 늦어질 수 있으니 결정 기한을 정하세요.',
+  '金의 기운이 강해요. 기준이 여러 개가 되지 않도록 팀 기준을 하나로 정리하세요.',
+  '水의 기운이 강해요. 각자 몰입하다 연락이 끊기지 않게 공유 시간을 정하세요.'
+];
+
+const TOTAL = QS.length;
+let cur = 0, answers = new Array(TOTAL).fill(null);
+let who = { kisu: '', team: '', name: '' };
+let mine = null; // { el, tm }
+let members = [];
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => { s.hidden = s.id !== id; });
+  window.scrollTo(0, 0);
+}
+
+/* QUIZ */
+function start() {
+  who = { kisu: $('inp-kisu').value.trim(), team: $('inp-team').value.trim(), name: $('inp-name').value.trim() };
+  if (!who.kisu || !who.team || !who.name) { $('err').hidden = false; return; }
+  $('err').hidden = true;
+  cur = 0; answers = new Array(TOTAL).fill(null);
+  show('sc-quiz'); renderQ();
+}
+
+function renderQ() {
+  const q = QS[cur];
+  $('prog-count').textContent = `${cur + 1} / ${TOTAL}`;
+  $('prog-fill').style.width = `${(cur / TOTAL) * 100}%`;
+  $('q-cat').textContent = q.cat;
+  $('q-text').textContent = q.q;
+  const list = $('opts'); list.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.className = 'opt' + (answers[cur] === i ? ' sel' : '');
+    b.innerHTML = `<span class="opt-key">${'ABCDE'[i]}</span><span></span>`;
+    b.lastChild.textContent = o.t;
+    b.onclick = () => pick(i);
+    list.appendChild(b);
+  });
+  $('btn-back').style.visibility = cur === 0 ? 'hidden' : 'visible';
+}
+
+function pick(i) {
+  answers[cur] = i;
+  document.querySelectorAll('.opt').forEach((b, idx) => b.classList.toggle('sel', idx === i));
+  setTimeout(() => { if (cur < TOTAL - 1) { cur++; renderQ(); } else showResult(); }, 280);
+}
+
+function compute() {
+  const s = [0, 0, 0, 0, 0];
+  const tms = [];
+  QS.forEach((q, qi) => {
+    const o = q.opts[answers[qi]];
+    if (q.kind === 'el') s[o.tp]++; else tms.push(o.tm);
+  });
+  let el = 0;
+  s.forEach((v, i) => { if (v > s[el]) el = i; });
+  const tied = s.map((v, i) => v === s[el] ? i : -1).filter(i => i >= 0);
+  if (tied.length > 1) { // 동점이면 마지막에 고른 답 쪽 오행을 우선
+    for (let qi = TOTAL - 1; qi >= 0; qi--) {
+      if (QS[qi].kind !== 'el') continue;
+      const tp = QS[qi].opts[answers[qi]].tp;
+      if (tied.includes(tp)) { el = tp; break; }
+    }
+  }
+  const tm = Math.round((2 * tms[0] + tms[1]) / 3); // 집중 시간에 가중치
+  return { s, el, tm };
+}
+
+function showResult() {
+  const { s, el, tm } = compute();
+  mine = { el, tm };
+  const e = EL[el], t = TIMES[tm];
+  const total = s.reduce((a, b) => a + b, 0);
+
+  const seal = $('res-seal'); seal.className = `seal big e${el}`; seal.textContent = e.ch;
+  $('res-who').textContent = `${who.kisu}기 · ${who.team}팀 · ${who.name}`;
+  $('res-name').textContent = `${e.ch}(${e.kr}) · ${e.name}`;
+  $('res-tags').innerHTML = `<span class="tag">${e.en}</span><span class="tag">${t.emo} ${t.name} · ${t.range}</span>`;
+  $('res-dist').innerHTML = EL.map((x, i) =>
+    `<div class="dist-row e${i}"><span class="seal sm e${i}">${x.ch}</span>` +
+    `<div class="dist-bar"><i style="width:${(s[i] / total) * 100}%"></i></div>` +
+    `<span class="dist-val">${Math.round((s[i] / total) * 100)}%</span></div>`).join('');
+  $('res-desc').textContent = e.desc;
+  $('res-traits').innerHTML = e.traits.map(x => `<span class="trait">${x}</span>`).join('');
+  $('res-manual').innerHTML = e.manual.map(x => `<li>${x}</li>`).join('');
+  $('res-careful').textContent = e.careful;
+  const from = (el + 4) % 5, to = (el + 1) % 5;
+  $('res-rel').innerHTML =
+    `<div class="rel-item"><span class="seal e${from}">${EL[from].ch}</span><span><b>나를 살려주는 기운</b>${EL[from].name}</span></div>` +
+    `<div class="rel-item"><span class="seal e${to}">${EL[to].ch}</span><span><b>내가 살려주는 기운</b>${EL[to].name}</span></div>`;
+
+  $('share-text').textContent =
+`[${who.team}팀] ${who.name}의 궁합 유형
+${e.ch}(${e.kr}) · ${e.name}  |  ${t.emo} ${t.name}
+
+🤝 나와 일할 때 이렇게 해주세요
+${e.manual.map(x => '- ' + x).join('\n')}
+
+😥 이럴 땐 조금 힘들어요
+- ${e.careful}`;
+
+  show('sc-result');
+  submit(e, t);
+}
+
+function submit(e, t) {
+  if (!WEBHOOK_URL) return;
+  const el = $('sub-status'); el.hidden = false; el.textContent = '결과 저장 중...';
+  fetch(WEBHOOK_URL, {
+    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ kisu: who.kisu, team: who.team, name: who.name, element: e.ch, time: t.name, el: mine.el, tm: mine.tm })
+  }).then(() => { el.textContent = '결과가 저장됐어요.'; })
+    .catch(() => { el.textContent = '저장에 실패했어요. 결과 확인과 복사는 그대로 할 수 있어요.'; });
+}
+
+function copy() {
+  const text = $('share-text').textContent, btn = $('btn-copy');
+  const done = msg => { btn.textContent = msg; setTimeout(() => { btn.textContent = '결과 복사하기'; }, 2200); };
+  const fallback = () => {
+    const r = document.createRange(); r.selectNodeContents($('share-text'));
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    done('위 텍스트를 직접 복사해주세요');
+  };
+  try { navigator.clipboard.writeText(text).then(() => done('복사했어요'), fallback); } catch (e) { fallback(); }
+}
+
+/* 궁합 */
+function relation(a, b) {
+  if (a === b) return 'same';
+  if ((a + 1) % 5 === b || (b + 1) % 5 === a) return 'saeng';
+  return 'geuk';
+}
+function pairInfo(A, B) {
+  const r = relation(A.el, B.el);
+  const elScore = r === 'saeng' ? 94 : r === 'same' ? 84 : 76;
+  const d = Math.abs(A.tm - B.tm);
+  const tmScore = [100, 85, 65, 50][d];
+  const score = Math.round(elScore * 0.75 + tmScore * 0.25);
+  let label, text;
+  if (r === 'saeng') {
+    const [g, t] = (A.el + 1) % 5 === B.el ? [A, B] : [B, A];
+    label = '상생';
+    text = `${esc(g.name)}님의 ${EL[g.el].gives} 덕분에 ${esc(t.name)}님이 더 힘을 내요. ${SAENG_TIP[g.el]}`;
+  } else if (r === 'same') {
+    label = '닮은꼴';
+    text = SAME_TIP[A.el];
+  } else {
+    const [a, b] = (A.el + 2) % 5 === B.el ? [A, B] : [B, A];
+    label = '자극';
+    text = `서로 달라서 배울 게 많은 사이예요. ${GEUK_TIP[`${a.el}-${b.el}`]}`;
+  }
+  const tmText = d === 0 ? '활동 시간대가 같아서 바로바로 소통하기 좋아요.'
+    : d === 1 ? '활동 시간대가 가까워요. 겹치는 시간에 회의를 잡으면 딱이에요.'
+    : `${TIMES[A.tm].name}과 ${TIMES[B.tm].name}이라 시간 맞추기가 필요해요. 코어타임을 정하고 그 밖의 시간엔 메시지로 남겨주세요.`;
+  return { score, label, text, tmText };
+}
+function grade(score) {
+  if (score >= 90) return '천생연분';
+  if (score >= 84) return '찰떡궁합';
+  if (score >= 78) return '환상의 콤비 예감';
+  return '서로 성장하는 사이';
+}
+
+const SAMPLE = [
+  { name: '김코드', el: 0, tm: 1 },
+  { name: '이모델', el: 2, tm: 0 },
+  { name: '박데이터', el: 4, tm: 3 },
+  { name: '최에이전트', el: 1, tm: 2 }
+];
+
+function openTeam() {
+  if (who.kisu && !$('load-kisu').value) $('load-kisu').value = who.kisu;
+  if (who.team && !$('load-team').value) $('load-team').value = who.team;
+  if (!members.length) {
+    if (mine) {
+      members = [{ name: who.name, el: mine.el, tm: mine.tm }, { name: '', el: 0, tm: 1 }];
+      $('team-sample-note').hidden = true;
+    } else {
+      members = SAMPLE.map(m => ({ ...m }));
+      $('team-sample-note').hidden = false;
+    }
+  }
+  renderMembers(); renderTeam(); show('sc-team');
+}
+
+function renderMembers() {
+  $('members').innerHTML = members.map((m, i) =>
+    `<div class="member" data-i="${i}">` +
+    `<span class="seal sm e${m.el}">${EL[m.el].ch}</span>` +
+    `<input id="m-name-${i}" data-f="name" placeholder="팀원 ${i + 1} 이름" value="${esc(m.name)}" aria-label="팀원 ${i + 1} 이름">` +
+    `<select id="m-el-${i}" class="sel-e" data-f="el" aria-label="팀원 ${i + 1} 오행">${EL.map((e, k) => `<option value="${k}"${k === m.el ? ' selected' : ''}>${e.ch} ${e.kr}</option>`).join('')}</select>` +
+    `<select id="m-tm-${i}" class="sel-t" data-f="tm" aria-label="팀원 ${i + 1} 시간대">${TIMES.map((t, k) => `<option value="${k}"${k === m.tm ? ' selected' : ''}>${t.emo} ${t.name}</option>`).join('')}</select>` +
+    `<button class="del" data-del="${i}" aria-label="팀원 ${i + 1} 삭제">×</button>` +
+    `</div>`).join('');
+  $('member-count').textContent = `${members.length}명 / 최대 6명`;
+  $('btn-add').hidden = members.length >= 6;
+}
+
+function renderTeam() {
+  const out = $('team-out');
+  const ms = members.map((m, i) => ({ ...m, name: m.name.trim() || `팀원 ${i + 1}` }));
+  if (ms.length < 2) { out.innerHTML = '<p class="note">팀원을 2명 이상 입력하면 궁합이 나와요.</p>'; teamCtx = null; syncRules(); return; }
+
+  const pairs = [];
+  for (let i = 0; i < ms.length; i++) for (let j = i + 1; j < ms.length; j++) pairs.push({ A: ms[i], B: ms[j], ...pairInfo(ms[i], ms[j]) });
+  const avg = Math.round(pairs.reduce((a, p) => a + p.score, 0) / pairs.length);
+  const counts = [0, 0, 0, 0, 0]; ms.forEach(m => counts[m.el]++);
+  const best = pairs.reduce((a, p) => p.score > a.score ? p : a, pairs[0]);
+  const care = pairs.reduce((a, p) => p.score < a.score ? p : a, pairs[0]);
+
+  // 추천 코어타임: 양옆 시간대까지 포함해 가장 많은 팀원이 편한 시간대
+  const tc = [0, 0, 0, 0]; ms.forEach(m => tc[m.tm]++);
+  let core = 0, coreFit = -1;
+  for (let k = 0; k < 4; k++) {
+    const fit = tc[k] * 2 + (tc[k - 1] || 0) + (tc[k + 1] || 0);
+    if (fit > coreFit) { coreFit = fit; core = k; }
+  }
+
+  let html = `<div class="card score-hero"><span class="eyebrow">우리 팀 궁합</span>` +
+    `<div class="score-num">${avg}<small>점</small></div><div class="score-grade">${grade(avg)}</div>` +
+    `<div class="ohaeng">${EL.map((e, i) => `<span><span class="seal sm e${i}${counts[i] ? '' : ' empty'}">${e.ch}</span>${counts[i]}</span>`).join('')}</div></div>`;
+
+  html += pairCard('🌟 최고의 궁합', best);
+  if (care !== best) html += pairCard('🤝 서로 맞춰가면 더 좋은 사이', care);
+
+  html += `<div class="card"><p class="sec-label">추천 코어타임</p><p>${TIMES[core].emo} <b>${TIMES[core].name} (${TIMES[core].range})</b> 시간대에 회의를 잡으면 가장 많은 팀원이 편해요.</p></div>`;
+
+  const tips = [...counts.map((c, i) => c >= 3 ? TEAM_MANY[i] : null).filter(Boolean),
+                ...counts.map((c, i) => c === 0 ? TEAM_MISSING[i] : null).filter(Boolean).slice(0, 2)];
+  if (tips.length) html += `<div class="boxed careful"><p class="sec-label">우리 팀 오행 처방</p>${tips.map(x => `<p>${x}</p>`).join('')}</div>`;
+
+  html += `<div class="card"><details class="pairs"><summary>1:1 궁합 전체 보기 (${pairs.length}쌍)</summary>` +
+    pairs.map(p => `<div class="pair">${pairHead(p)}<p>${p.text}</p><p class="note" style="margin-top:4px">${p.tmText}</p></div>`).join('') +
+    `</details></div>`;
+
+  html += `<div class="boxed manual"><p class="sec-label">이제 팀끼리 이야기해봐요</p><p>1. 서로의 ‘나와 일할 때 이렇게 해주세요’를 돌아가며 읽기<br>2. 궁합 풀이와 오행 처방을 보며 이야기 나누기<br>3. 아래 ‘우리 팀 규칙 정하기’를 함께 채우고 팀 채널에 올리기</p></div>`;
+  out.innerHTML = html;
+  teamCtx = { avg, grade: grade(avg), core, tips };
+  syncRules();
+}
+function pairHead(p) {
+  return `<div class="pair-head"><span class="seal sm e${p.A.el}">${EL[p.A.el].ch}</span>${esc(p.A.name)} × ` +
+    `<span class="seal sm e${p.B.el}">${EL[p.B.el].ch}</span>${esc(p.B.name)}` +
+    `<span class="rel-chip">${p.label}</span><span class="pair-score">${p.score}점</span></div>`;
+}
+function pairCard(title, p) {
+  return `<div class="card"><p class="sec-label">${title}</p>${pairHead(p)}<p>${p.text}</p><p class="note" style="margin-top:6px">${p.tmText}</p></div>`;
+}
+
+$('members').addEventListener('input', e => {
+  const row = e.target.closest('.member'); if (!row) return;
+  const i = +row.dataset.i, f = e.target.dataset.f;
+  if (f === 'name') members[i].name = e.target.value;
+  else members[i][f] = +e.target.value;
+  if (f === 'el') { const s = row.querySelector('.seal'); s.className = `seal sm e${members[i].el}`; s.textContent = EL[members[i].el].ch; }
+  renderTeam();
+});
+$('members').addEventListener('click', e => {
+  const b = e.target.closest('[data-del]'); if (!b) return;
+  members.splice(+b.dataset.del, 1); renderMembers(); renderTeam();
+});
+/* 팀 규칙 */
+let teamCtx = null;
+const rules = { team: '', name: '', goal: '', core: '', reply: '', disagree: '', hurt: '', absent: '', extra: '' };
+let roles = [];
+let coreDirty = false;
+
+function syncRules() {
+  if (!rules.team && who.team) { rules.team = who.team; $('r-team').value = who.team; }
+  if (teamCtx && !coreDirty) {
+    const t = TIMES[teamCtx.core];
+    rules.core = `${t.name} ${t.range} 중 매일 2시간`;
+    $('r-core').value = rules.core;
+  }
+  // 역할: 팀원 목록에 맞춰 다시 그리되 입력값은 유지
+  roles.length = members.length;
+  $('roles').innerHTML = members.map((m, i) =>
+    `<div class="role"><span>${esc(m.name.trim() || `팀원 ${i + 1}`)}</span>` +
+    `<input id="r-role-${i}" data-role="${i}" placeholder="예) 데이터 전처리, 발표" value="${esc(roles[i] || '')}" aria-label="${esc(m.name.trim() || `팀원 ${i + 1}`)} 역할"></div>`).join('');
+  const extra = teamCtx ? teamCtx.tips : [];
+  $('extra-chips').innerHTML = [...extra, '매일 아침 한 줄 인사하기', '주 1회 15분 팀 회고하기']
+    .map(x => `<button type="button" class="chip-btn">${esc(x)}</button>`).join('');
+  renderRulesPreview();
+}
+
+function rulesText() {
+  const head = `[${rules.team || 'N'}팀]${rules.name ? ' ' + rules.name : ''} 팀 규칙`;
+  const v = x => x.trim() || '-';
+  const roleLines = members.map((m, i) => `  - ${m.name.trim() || `팀원 ${i + 1}`} : ${(roles[i] || '').trim() || '-'}`).join('\n');
+  return `${head}
+🎯 목표 : ${v(rules.goal)}
+⏰ 코어타임 : ${v(rules.core)}
+💬 응답 약속 : ${v(rules.reply)}
+👥 역할
+${roleLines}
+🤝 의견이 다를 때 : ${v(rules.disagree)}
+🚨 서운하거나 힘들 때 : ${v(rules.hurt)}
+🙋 빠지거나 늦을 때 : ${v(rules.absent)}
+✨ 우리 팀만의 규칙 : ${v(rules.extra)}` + (teamCtx ? `\n💞 팀 궁합 : ${teamCtx.avg}점 (${teamCtx.grade})` : '');
+}
+function renderRulesPreview() { $('rules-preview').textContent = rulesText(); }
+
+$('rules').addEventListener('input', e => {
+  const k = e.target.dataset.r, ri = e.target.dataset.role;
+  if (k) { rules[k] = e.target.value; if (k === 'core') coreDirty = true; }
+  else if (ri !== undefined) roles[+ri] = e.target.value;
+  else return;
+  $('rules-err').hidden = true;
+  renderRulesPreview();
+});
+$('rules').addEventListener('click', e => {
+  const b = e.target.closest('.chip-btn'); if (!b) return;
+  const id = b.closest('.chips').dataset.for, field = $(id), add = b.textContent;
+  const cur = field.value.trim();
+  if (cur.includes(add)) return;
+  field.value = cur ? `${cur} / ${add}` : add;
+  rules[field.dataset.r] = field.value;
+  $('rules-err').hidden = true;
+  renderRulesPreview();
+});
+$('btn-rules-copy').onclick = () => {
+  if (!rules.disagree.trim() || !rules.hurt.trim()) { $('rules-err').hidden = false; return; }
+  const btn = $('btn-rules-copy');
+  const done = msg => { btn.textContent = msg; setTimeout(() => { btn.textContent = '팀 규칙 복사하기'; }, 2200); };
+  const fallback = () => {
+    const r = document.createRange(); r.selectNodeContents($('rules-preview'));
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    done('위 텍스트를 직접 복사해주세요');
+  };
+  try { navigator.clipboard.writeText(rulesText()).then(() => done('복사했어요. 팀 채널에 올려주세요'), fallback); } catch (e) { fallback(); }
+};
+
+/* 구글 시트에서 팀원 결과 불러오기 (WEBHOOK_URL이 있을 때만 표시) */
+if (WEBHOOK_URL) $('load-box').hidden = false;
+async function loadTeam() {
+  const kisu = $('load-kisu').value.trim(), team = $('load-team').value.trim(), st = $('load-status');
+  if (!kisu || !team) { st.textContent = '기수와 팀을 모두 입력해주세요.'; return; }
+  st.textContent = '불러오는 중...';
+  try {
+    const res = await fetch(`${WEBHOOK_URL}?kisu=${encodeURIComponent(kisu)}&team=${encodeURIComponent(team)}`);
+    const list = await res.json();
+    if (!Array.isArray(list) || !list.length) { st.textContent = `${kisu}기 ${team}팀 결과가 아직 없어요. 팀원들이 테스트를 마쳤는지 확인해주세요.`; return; }
+    members = list.slice(0, 6).map(r => ({ name: String(r.name), el: +r.el, tm: +r.tm }));
+    rules.team = team; $('r-team').value = team;
+    $('team-sample-note').hidden = true;
+    renderMembers(); renderTeam();
+    st.textContent = `${list.length}명의 결과를 불러왔어요.` + (list.length > 6 ? ' 최대 6명까지만 표시돼요.' : '');
+  } catch (err) {
+    st.textContent = '불러오지 못했어요. 잠시 후 다시 시도하거나 팀원 정보를 직접 입력해주세요.';
+  }
+}
+$('btn-load').onclick = loadTeam;
+
+$('btn-add').onclick = () => { if (members.length < 6) { members.push({ name: '', el: 0, tm: 1 }); renderMembers(); renderTeam(); } };
+
+$('btn-start').onclick = start;
+$('btn-back').onclick = () => { if (cur > 0) { cur--; renderQ(); } };
+$('btn-copy').onclick = copy;
+$('btn-retry').onclick = () => show('sc-intro');
+$('btn-team-open').onclick = openTeam;
+$('btn-team-from-result').onclick = () => { members = []; openTeam(); };
+$('btn-team-back').onclick = () => show('sc-intro');
+</script>
