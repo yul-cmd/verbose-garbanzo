@@ -113,7 +113,11 @@
     background: var(--surface); color: var(--fg); border: 1.5px solid var(--line); transition: border-color .15s, background .15s;
   }
   .opt:hover, .opt.sel { border-color: var(--accent); background: var(--accent-soft); }
-  .opt-key { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--accent); background: var(--surface2); border-radius: 5px; padding: 2px 7px; margin-top: 2px; flex-shrink: 0; }
+  .opt-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); margin-top: 2px; flex-shrink: 0; display: grid; place-items: center; transition: border-color .15s; }
+  .opt.sel .opt-dot { border-color: var(--accent); }
+  .opt.sel .opt-dot::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .quiz-nav { display: grid; grid-template-columns: auto 1fr; gap: 10px; margin-top: 22px; align-items: center; }
+  .quiz-nav .btn:disabled { opacity: .35; cursor: not-allowed; }
   .back { margin-top: 22px; padding: 10px 16px; border-radius: 9px; font-size: 13px; background: var(--surface2); color: var(--fg-sub); border: 1px solid var(--line); }
 
   /* RESULT */
@@ -262,7 +266,10 @@
     <span class="q-cat" id="q-cat"></span>
     <p class="q-text" id="q-text"></p>
     <div class="opts" id="opts"></div>
-    <button class="back" id="btn-back">← 이전 질문</button>
+    <div class="quiz-nav">
+      <button class="back" id="btn-back" style="margin-top:0">← 이전</button>
+      <button class="btn" id="btn-next" disabled>다음 →</button>
+    </div>
   </section>
 
   <!-- RESULT -->
@@ -301,9 +308,9 @@
       <p class="sec-label">팀 채널에 공유하기</p>
       <pre id="share-text"></pre>
       <div class="stack">
-        <button class="btn" id="btn-copy">결과 복사하기</button>
+        <button class="btn" id="btn-copy">팀 채널에 올릴 결과 복사</button>
         <button class="btn ghost" id="btn-team-from-result">팀 궁합 보러 가기</button>
-        <button class="link-btn" id="btn-retry">다시 테스트하기</button>
+        <button class="link-btn" id="btn-retry">처음부터 다시 하기</button>
       </div>
       <p class="sub-status" id="sub-status" hidden></p>
     </div>
@@ -490,19 +497,19 @@ const QS = [
     { t: '발표하고 팀 분위기를 챙기는 일', tp: 1 },
     { t: '일정 관리, 코드 리뷰, 품질 체크', tp: 3 }
   ]},
-  { kind: 'el', cat: '팀플 태도', q: '팀원 한 명이 이틀째 팀 채널에서 조용하다.', opts: [
-    { t: '바로 DM으로 “괜찮아요?” 안부를 묻는다', tp: 1 },
-    { t: '진행 상황을 공유해달라고 요청한다', tp: 3 },
-    { t: '사정이 있겠지 하고, 그 사람 작업 상황을 조용히 살펴본다', tp: 4 },
-    { t: '부담 안 되게 살짝 챙겨본다', tp: 2 },
-    { t: '“이거 같이 해볼래요?” 함께할 거리를 제안한다', tp: 0 }
+  { kind: 'el', cat: '팀플 태도', q: '내 작업 진행 상황을 팀에 공유하는 나의 방식은?', opts: [
+    { t: '어느 정도 결과가 나왔을 때 한 번에 정리해서 공유한다', tp: 4 },
+    { t: '매일 팀 채널에 짧게라도 근황을 남긴다', tp: 1 },
+    { t: '진행률과 남은 일을 정해진 형식으로 정리해 올린다', tp: 3 },
+    { t: '새로 시도해본 게 생기면 신나서 바로 공유한다', tp: 0 },
+    { t: '팀원이 물어보면 그때 자세히 알려준다', tp: 2 }
   ]},
-  { kind: 'el', cat: '팀플 태도', q: '프로젝트 중 가장 신나는 순간은?', opts: [
-    { t: '계획대로 착착 마무리될 때', tp: 3 },
-    { t: '아이디어가 처음 형태를 갖출 때', tp: 0 },
-    { t: '팀이 다같이 으쌰으쌰할 때', tp: 1 },
-    { t: '어려운 문제의 답을 찾았을 때', tp: 4 },
-    { t: '모두가 무리 없이 함께 갈 때', tp: 2 }
+  { kind: 'el', cat: '팀플 태도', q: '자고 일어나니 팀 채팅이 100개 넘게 쌓여 있다.', opts: [
+    { t: '결정된 사항과 내 할 일만 골라서 정리한다', tp: 3 },
+    { t: '처음부터 다 읽고 이모지로 리액션을 남긴다', tp: 1 },
+    { t: '흥미로운 아이디어가 보이면 거기에 바로 답장한다', tp: 0 },
+    { t: '천천히 흐름을 파악한 뒤 필요한 의견만 남긴다', tp: 4 },
+    { t: '다 읽고 “제가 놓친 거 있으면 알려주세요” 하고 남긴다', tp: 2 }
   ]},
   { kind: 'time', cat: '선호 시간', q: '팀 회의 시간을 내가 정할 수 있다면?', opts: [
     { t: '☕ 오전 8시 · 모닝커피 들고 갓생 회의', tm: 0 },
@@ -511,32 +518,32 @@ const QS = [
     { t: '🌙 새벽 1시 · 새벽 감성 풀가동, 아이디어 폭발', tm: 3 }
   ]},
   { kind: 'el', cat: '갈등 대처', q: '팀원의 말투에 서운함을 느꼈다. 나는?', opts: [
-    { t: '시간을 두고 생각을 정리한 뒤 이야기한다', tp: 4 },
+    { t: '바로 말하기보다 하루쯤 지나 마음이 정리되면 이야기한다', tp: 4 },
     { t: '그 자리에서 솔직하게 말한다', tp: 1 },
     { t: '다른 일에 집중하며 털어버린다', tp: 0 },
-    { t: '있었던 일을 정리해서 차분하게 말한다', tp: 3 },
+    { t: '같은 일이 반복되지 않게 소통 규칙을 정하자고 제안한다', tp: 3 },
     { t: '내가 오해한 건 아닌지 먼저 생각해본다', tp: 2 }
   ]},
-  { kind: 'el', cat: '갈등 대처', q: '팀 안에서 두 사람이 부딪혔다. 나는?', opts: [
-    { t: '양쪽 이야기를 들어주며 중재한다', tp: 2 },
-    { t: '새로운 해결책을 내서 분위기를 바꾼다', tp: 0 },
-    { t: '역할과 규칙을 다시 정리하자고 한다', tp: 3 },
-    { t: '“다같이 터놓고 얘기해요!” 자리를 만든다', tp: 1 },
-    { t: '한 발 떨어져서 원인을 살펴본다', tp: 4 }
+  { kind: 'el', cat: '갈등 대처', q: '팀원 두 명이 코드 리뷰와 머지 방식을 두고 언성이 높아졌다.', opts: [
+    { t: '양쪽 이야기를 각각 들어주며 중재한다', tp: 2 },
+    { t: '“이렇게 해보면 어때요?” 새로운 방식을 제안한다', tp: 0 },
+    { t: '머지 규칙을 팀 전체가 같이 정하자고 한다', tp: 3 },
+    { t: '“잠깐 쉬고 음성으로 얘기해요!” 분위기를 푼다', tp: 1 },
+    { t: '한 발 떨어져서 무엇이 문제였는지 살펴본다', tp: 4 }
   ]},
-  { kind: 'el', cat: '갈등 대처', q: '마감 직전, 팀원이 맡은 일을 못 끝냈다.', opts: [
-    { t: '“같이 하자!” 바로 뛰어든다', tp: 1 },
-    { t: '막힌 원인을 같이 파본다', tp: 4 },
-    { t: '우선순위를 다시 정해서 범위를 조정한다', tp: 3 },
-    { t: '다른 방법이 없는지 빠르게 찾는다', tp: 0 },
-    { t: '괜찮다고 다독이고 일을 나눠서 한다', tp: 2 }
+  { kind: 'el', cat: '갈등 대처', q: '최종 발표 일주일 전, 한 팀원이 이틀째 연락이 없다.', opts: [
+    { t: '걱정돼서 바로 DM과 멘션을 보낸다', tp: 1 },
+    { t: '그 팀원이 맡은 작업이 어디까지 됐는지 먼저 확인한다', tp: 4 },
+    { t: '남은 일정과 역할을 다시 나눠 대비한다', tp: 3 },
+    { t: '그 몫을 다른 방법으로 채울 아이디어를 낸다', tp: 0 },
+    { t: '“괜찮으세요? 편할 때 연락 주세요” 부담 없게 메시지를 남긴다', tp: 2 }
   ]},
-  { kind: 'el', cat: '의견 조율', q: '내 의견과 팀원의 의견이 다르다.', opts: [
-    { t: '근거 자료를 찾아본 뒤 의견을 낸다', tp: 4 },
-    { t: '성능, 일정 같은 기준을 정해서 비교한다', tp: 3 },
-    { t: '두 의견을 섞은 제3의 안을 만든다', tp: 0 },
-    { t: '팀 분위기를 생각해서 맞춰주는 편이다', tp: 2 },
-    { t: '내 의견을 열정적으로 설득한다', tp: 1 }
+  { kind: 'el', cat: '의견 조율', q: '데이터에 문제가 생겨 성능이 안 나온다. 해결 방향은 어떻게 정할까?', opts: [
+    { t: '원인부터 분석해서 근거를 들고 이야기한다', tp: 4 },
+    { t: '문제, 원인, 해결책을 문서로 정리해 팀과 합의한다', tp: 3 },
+    { t: '해결 방법 후보를 여러 개 빠르게 제안한다', tp: 0 },
+    { t: '관련된 팀원들끼리 먼저 충분히 이야기해보게 한다', tp: 2 },
+    { t: '“다같이 바로 음성 회의 해요!” 팀을 모은다', tp: 1 }
   ]},
   { kind: 'el', cat: '의견 조율', q: '회의에서 결정이 안 나고 계속 길어진다.', opts: [
     { t: '“투표로 정해요!”', tp: 1 },
@@ -610,24 +617,30 @@ function renderQ() {
   const q = QS[cur];
   $('prog-count').textContent = `${cur + 1} / ${TOTAL}`;
   $('prog-fill').style.width = `${(cur / TOTAL) * 100}%`;
-  $('q-cat').textContent = q.cat;
+  $('q-cat').textContent = `상황 ${String(cur + 1).padStart(2, '0')} · ${q.cat}`;
   $('q-text').textContent = q.q;
   const list = $('opts'); list.innerHTML = '';
   q.opts.forEach((o, i) => {
     const b = document.createElement('button');
     b.className = 'opt' + (answers[cur] === i ? ' sel' : '');
-    b.innerHTML = `<span class="opt-key">${'ABCDE'[i]}</span><span></span>`;
+    b.innerHTML = `<span class="opt-dot" aria-hidden="true"></span><span></span>`;
     b.lastChild.textContent = o.t;
     b.onclick = () => pick(i);
     list.appendChild(b);
   });
   $('btn-back').style.visibility = cur === 0 ? 'hidden' : 'visible';
+  $('btn-next').disabled = answers[cur] === null;
+  $('btn-next').textContent = cur === TOTAL - 1 ? '학습 완료! 결과 보기 🧪' : '다음 →';
 }
 
 function pick(i) {
   answers[cur] = i;
   document.querySelectorAll('.opt').forEach((b, idx) => b.classList.toggle('sel', idx === i));
-  setTimeout(() => { if (cur < TOTAL - 1) { cur++; renderQ(); } else showResult(); }, 280);
+  $('btn-next').disabled = false;
+}
+function next() {
+  if (answers[cur] === null) return;
+  if (cur < TOTAL - 1) { cur++; renderQ(); } else showResult();
 }
 
 function compute() {
@@ -700,7 +713,7 @@ function submit(e, t) {
 
 function copy() {
   const text = $('share-text').textContent, btn = $('btn-copy');
-  const done = msg => { btn.textContent = msg; setTimeout(() => { btn.textContent = '결과 복사하기'; }, 2200); };
+  const done = msg => { btn.textContent = msg; setTimeout(() => { btn.textContent = '팀 채널에 올릴 결과 복사'; }, 2200); };
   const fallback = () => {
     const r = document.createRange(); r.selectNodeContents($('share-text'));
     const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
@@ -940,6 +953,7 @@ $('btn-add').onclick = () => { if (members.length < 6) { members.push({ name: ''
 
 $('btn-start').onclick = start;
 $('btn-back').onclick = () => { if (cur > 0) { cur--; renderQ(); } };
+$('btn-next').onclick = next;
 $('btn-copy').onclick = copy;
 $('btn-retry').onclick = () => show('sc-intro');
 $('btn-team-open').onclick = openTeam;
