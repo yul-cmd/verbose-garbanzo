@@ -220,6 +220,69 @@
     .member .del { grid-row: 1; grid-column: 3; }
   }
   @media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+
+  /* v2: 팀원 행 (이름·캐릭터 / 시간 3개) */
+  .member { grid-template-columns: 30px minmax(0, 1fr) 128px 28px; row-gap: 6px; }
+  .member .times { grid-column: 2 / 4; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .member .del { grid-row: 1; grid-column: 4; }
+  @media (max-width: 460px) {
+    .member { grid-template-columns: 30px minmax(0, 1fr) 28px; }
+    .member .sel-e { grid-column: 2 / 3; grid-row: 2; }
+    .member .times { grid-column: 2 / 3; grid-row: 3; grid-template-columns: 1fr; }
+    .member .times select { grid-column: auto; }
+    .member .del { grid-row: 1; grid-column: 3; }
+  }
+  .res-sub { font-size: 13.5px; color: var(--fg-sub); }
+  .time-list { display: grid; gap: 6px; font-size: 14px; }
+  .time-list div { display: grid; grid-template-columns: 92px 1fr; gap: 8px; }
+  .time-list b { font-weight: 500; color: var(--fg-sub); font-size: 13px; }
+  .notice { font-size: 12px; color: var(--fg-sub); margin-top: 12px; line-height: 1.6; }
+
+  /* 팀원 결과 요약 */
+  .roster { display: grid; gap: 8px; }
+  .roster-row { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 13.5px; }
+  .roster-row strong { font-size: 14.5px; }
+  .roster-row .meta { color: var(--fg-sub); font-size: 12.5px; }
+
+  /* 팀 구성 지도 */
+  .map { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .slot { border: 1.5px solid var(--c); border-radius: 12px; padding: 10px 6px; display: grid; justify-items: center; gap: 4px; text-align: center; min-width: 0; background: var(--surface); }
+  .slot .emo { font-size: 24px; line-height: 1.1; }
+  .slot .nm { font-size: 11px; color: var(--fg-sub); }
+  .slot .who { display: grid; gap: 3px; width: 100%; }
+  .slot .who span { font-size: 12px; font-weight: 700; background: var(--surface2); border-radius: 6px; padding: 2px 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .slot.empty { border-style: dashed; opacity: .6; }
+  .slot.empty .who span { background: transparent; font-weight: 500; color: var(--fg-sub); }
+  @media (max-width: 460px) { .map { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  /* 시간대 막대 */
+  .tbars { display: grid; gap: 8px; }
+  .tbar { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 8px; align-items: center; font-size: 12.5px; }
+  .tbar .lane { position: relative; height: 18px; background: var(--surface2); border-radius: 5px; overflow: hidden; }
+  .tbar .lane i { position: absolute; top: 3px; bottom: 3px; border-radius: 4px; }
+  .tbar .lane i.co { background: var(--accent); }
+  .tbar .lane i.co.flex { background: var(--accent); opacity: .35; }
+  .tbar .lane i.ct { background: var(--water); }
+  .tbar .lane i.ct.vary { background: repeating-linear-gradient(45deg, var(--water) 0 4px, transparent 4px 8px); }
+  .tbar .lane i.band { top: 0; bottom: 0; border-radius: 0; background: var(--earth); opacity: .22; }
+  .tbar .nmx { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ticks { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 8px; font-family: var(--font-mono); font-size: 10.5px; color: var(--fg-sub); }
+  .ticks .scale { position: relative; height: 14px; }
+  .ticks .scale span { position: absolute; transform: translateX(-50%); }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11.5px; color: var(--fg-sub); margin-top: 8px; }
+  .legend i { display: inline-block; width: 12px; height: 8px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+  .core { display: grid; gap: 6px; font-size: 14px; margin-top: 12px; }
+
+  /* 대화 카드 */
+  .talk { display: grid; gap: 10px; }
+  .talk-card { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--surface); }
+  .talk-card .pair-head { margin-bottom: 4px; font-size: 14px; }
+  .talk-card p { font-size: 13.5px; line-height: 1.7; }
+  details.more summary { cursor: pointer; font-size: 13.5px; font-weight: 700; color: var(--accent); padding: 4px 0; }
+  details.more .talk { margin-top: 10px; }
+
+  .save-row { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  #team-capture { display: grid; gap: 14px; padding: 4px; background: var(--bg); }
 </style>
 
 <div class="wrap">
@@ -229,7 +292,7 @@
     <div class="intro-top">
       <span class="eyebrow">Codeit Sprint · AI Engineer</span>
       <h1>케미 러닝 <span style="font-size:.5em;color:var(--fg-sub);font-weight:400;font-family:var(--font-mono)">Chemi-Learning</span></h1>
-      <p class="intro-sub">🧪 우리 팀 케미, 아직 학습 전이에요!<br>질문 12개로 나의 케미 캐릭터를 찾고, 팀원들과 궁합을 맞춰보세요.</p>
+      <p class="intro-sub">🧪 우리 팀 케미, 아직 학습 전이에요!<br>질문 13개로 나의 케미 캐릭터를 찾고, 팀원들과 궁합을 맞춰보세요.</p>
       <div class="lineup" aria-hidden="true">
         <span class="seal e0">💡</span><span class="seal e1">⚡</span><span class="seal e2">🫧</span><span class="seal e3">✅</span><span class="seal e4">🔍</span>
       </div>
@@ -254,13 +317,14 @@
         <button class="btn" id="btn-start">내 케미 캐릭터 찾기</button>
         <button class="btn ghost" id="btn-team-open">바로 팀 궁합 보기</button>
       </div>
+      <p class="notice">· 테스트는 <b>1인 1회</b>만 응답할 수 있어요. 이미 응답했다면 저장된 결과를 다시 보여드려요.<br>· 결과(이름, 캐릭터, 연락 가능 시간)는 팀 활동을 위해 저장되고, 같은 팀원과 운영진이 볼 수 있어요.<br>· 같은 기수에 이름이 같은 분이 있다면 이름 뒤에 A, B를 붙여주세요.</p>
     </div>
   </section>
 
   <!-- QUIZ -->
   <section id="sc-quiz" class="screen" hidden>
     <div class="prog">
-      <div class="prog-meta"><span id="prog-label">EPOCH · 케미 학습 중</span><span id="prog-count">1 / 12</span></div>
+      <div class="prog-meta"><span id="prog-label">EPOCH · 케미 학습 중</span><span id="prog-count">1 / 13</span></div>
       <div class="track"><div class="fill" id="prog-fill" style="width:0%"></div></div>
     </div>
     <span class="q-cat" id="q-cat"></span>
@@ -274,34 +338,41 @@
 
   <!-- RESULT -->
   <section id="sc-result" class="screen" hidden>
-    <div class="res-hero">
-      <span class="eyebrow">학습 완료! 나의 케미 캐릭터는</span>
-      <span class="seal big" id="res-seal"></span>
-      <span class="res-who" id="res-who"></span>
-      <h2 class="res-name" id="res-name"></h2>
-      <div class="res-tags" id="res-tags"></div>
-    </div>
-    <div class="card sections">
-      <div>
-        <p class="sec-label">캐릭터 예측 확률</p>
-        <div class="dist" id="res-dist"></div>
+    <div id="result-capture" style="background:var(--bg);padding:4px">
+      <div class="res-hero">
+        <span class="eyebrow" id="res-eyebrow">학습 완료! 나의 케미 캐릭터는</span>
+        <span class="seal big" id="res-seal"></span>
+        <span class="res-who" id="res-who"></span>
+        <h2 class="res-name" id="res-name"></h2>
+        <span class="res-sub" id="res-sub"></span>
+        <div class="res-tags" id="res-tags"></div>
       </div>
-      <div>
-        <p class="sec-label">이런 팀원이에요</p>
-        <p class="desc" id="res-desc"></p>
-      </div>
-      <div class="traits" id="res-traits"></div>
-      <div class="boxed manual">
-        <p class="sec-label">나와 일할 때 이렇게 해주세요</p>
-        <ul id="res-manual"></ul>
-      </div>
-      <div class="boxed careful">
-        <p class="sec-label">이럴 땐 조금 힘들어요</p>
-        <span id="res-careful"></span>
-      </div>
-      <div>
-        <p class="sec-label">시너지 나는 캐릭터</p>
-        <div class="rel-pair" id="res-rel"></div>
+      <div class="card sections">
+        <div>
+          <p class="sec-label">캐릭터 예측 확률</p>
+          <div class="dist" id="res-dist"></div>
+        </div>
+        <div>
+          <p class="sec-label">이런 팀원이에요</p>
+          <p class="desc" id="res-desc"></p>
+        </div>
+        <div class="traits" id="res-traits"></div>
+        <div class="boxed manual">
+          <p class="sec-label">나와 일할 때 이렇게 해주세요</p>
+          <ul id="res-manual"></ul>
+        </div>
+        <div class="boxed careful">
+          <p class="sec-label">이럴 땐 조금 힘들어요</p>
+          <span id="res-careful"></span>
+        </div>
+        <div>
+          <p class="sec-label">나의 협업·연락 시간</p>
+          <div class="time-list" id="res-time"></div>
+        </div>
+        <div>
+          <p class="sec-label">시너지 나는 캐릭터</p>
+          <div class="rel-pair" id="res-rel"></div>
+        </div>
       </div>
     </div>
     <div class="share">
@@ -309,8 +380,9 @@
       <pre id="share-text"></pre>
       <div class="stack">
         <button class="btn" id="btn-copy">팀 채널에 올릴 결과 복사</button>
-        <button class="btn ghost" id="btn-team-from-result">팀 궁합 보러 가기</button>
-        <button class="link-btn" id="btn-retry">처음부터 다시 하기</button>
+        <button class="btn ghost" id="btn-save-me">내 결과 이미지로 저장</button>
+        <button class="btn ghost" id="btn-team-from-result">우리 팀 궁합 보러 가기</button>
+        <button class="link-btn" id="btn-retry">처음으로</button>
       </div>
       <p class="sub-status" id="sub-status" hidden></p>
     </div>
@@ -320,10 +392,10 @@
   <section id="sc-team" class="screen" hidden>
     <span class="eyebrow">Team 궁합</span>
     <h1 style="font-size:30px;margin-top:8px">우리 팀 궁합 보기</h1>
-    <p class="intro-sub" style="margin-top:8px">팀원들이 공유한 결과를 보고 이름, 캐릭터, 시간대를 입력하세요.</p>
+    <p class="intro-sub" style="margin-top:8px">기수와 팀 번호를 넣으면 팀원들의 결과를 바로 불러와요.</p>
     <p class="note" id="team-sample-note" style="margin-top:6px" hidden>지금은 예시 팀이 채워져 있어요. 우리 팀 정보로 바꿔보세요.</p>
-    <div class="card load-box" id="load-box" hidden>
-      <p class="sec-label">팀원 결과 불러오기</p>
+    <div class="card load-box" id="load-box">
+      <p class="sec-label">우리 팀 결과 불러오기</p>
       <div class="load-row">
         <input id="load-kisu" type="number" placeholder="기수" aria-label="기수" inputmode="numeric">
         <input id="load-team" type="number" placeholder="팀" aria-label="팀" inputmode="numeric">
@@ -331,11 +403,15 @@
       </div>
       <p class="note" id="load-status">팀원들이 테스트를 마쳤다면 기수와 팀을 넣고 불러오세요.</p>
     </div>
-    <div class="members" id="members"></div>
-    <div class="add-row">
-      <button class="link-btn" id="btn-add">+ 팀원 추가</button>
-      <span class="note" id="member-count"></span>
-    </div>
+    <details class="more" style="margin-top:14px">
+      <summary>팀원 정보 직접 입력·수정하기</summary>
+      <div class="members" id="members"></div>
+      <div class="add-row">
+        <button class="link-btn" id="btn-add">+ 팀원 추가</button>
+        <span class="note" id="member-count"></span>
+      </div>
+    </details>
+
     <div class="team-out" id="team-out"></div>
 
     <div class="card rules" id="rules">
@@ -353,17 +429,13 @@
         <input id="r-goal" data-r="goal" placeholder="예) 끝까지 다같이 완주하고, 각자 포트폴리오 하나씩 챙기기">
       </div>
       <div class="rfield">
-        <label for="r-core">⏰ 코어타임</label>
-        <input id="r-core" data-r="core" placeholder="팀원 입력 후 추천 코어타임이 채워져요">
+        <label for="r-core">⏰ 코어타임 (협업 + 연락 가능 시간)</label>
+        <textarea id="r-core" data-r="core" placeholder="팀원 결과를 불러오면 평일·주말 코어타임이 채워져요"></textarea>
       </div>
       <div class="rfield">
         <label for="r-reply">💬 응답 약속</label>
         <textarea id="r-reply" data-r="reply" placeholder="메시지에 언제까지 답할지 정해요"></textarea>
-        <div class="chips" data-for="r-reply">
-          <button type="button" class="chip-btn">코어타임 내 2시간 안에 답하기</button>
-          <button type="button" class="chip-btn">늦어질 땐 이모지라도 남기기</button>
-          <button type="button" class="chip-btn">밤 11시 이후 연락은 급할 때만</button>
-        </div>
+        <div class="chips" id="reply-chips" data-for="r-reply"></div>
       </div>
       <div class="rfield">
         <label>👥 역할 분담</label>
@@ -375,7 +447,7 @@
         <div class="chips" data-for="r-disagree">
           <button type="button" class="chip-btn">각자 근거를 들고 이야기하기</button>
           <button type="button" class="chip-btn">30분 안에 안 정해지면 투표</button>
-          <button type="button" class="chip-btn">둘 다 실험해보고 결과로 정하기</button>
+          <button type="button" class="chip-btn">둘 다 해보고 결과로 정하기</button>
           <button type="button" class="chip-btn">사람이 아니라 의견에 대해 말하기</button>
         </div>
       </div>
@@ -416,44 +488,43 @@
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 // 구글 시트 저장용 Apps Script URL. 비워두면 저장 없이 결과만 보여줍니다.
 const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxJz9EYNKtnUL9Vh_LEvhUrMJkRpi5y8q59XY8wJ7C3Qe85eU2ygqncUBPcx5sgVRoA/exec';
 
 // 캐릭터 인덱스: 0 제너레이터 · 1 부스터 · 2 레귤러 · 3 밸리데이터 · 4 딥러너
-// 시너지: 0→1→2→3→4→0  (i → (i+1)%5)
-// 성장형: 0→2, 1→3, 2→4, 3→0, 4→1  (i → (i+2)%5)
 const EL = [
   {
-    ch: '💡', short: '제너레이터', name: '반짝 제너레이터', en: 'GENERATOR', gives: '반짝이는 아이디어',
+    ch: '💡', short: '제너레이터', name: '반짝 제너레이터', en: 'GENERATOR',
     desc: '생성형 AI처럼 아이디어를 끝없이 만들어내는 팀원이에요. “이렇게 해보면 어때요?”를 제일 먼저 꺼내고, 막힌 상황에서도 새로운 길을 찾아냅니다. 팀의 첫 프롬프트를 던지는 사람이에요.',
     traits: ['아이디어 뱅크', '도전', '새로운 시도', '유연한 발상'],
     manual: ['아이디어를 낼 때는 바로 평가하기보다 일단 들어봐 주세요', '방향이 바뀌면 이유와 함께 알려주세요', '새로운 시도를 해볼 기회를 주면 신나게 일해요'],
     careful: '“원래 하던 대로 하죠”로 아이디어가 바로 닫힐 때'
   },
   {
-    ch: '⚡', short: '부스터', name: '텐션 부스터', en: 'BOOSTER', gives: '에너지',
+    ch: '⚡', short: '부스터', name: '텐션 부스터', en: 'BOOSTER',
     desc: '팀의 학습률을 끌어올리는 분위기 메이커예요. 먼저 인사하고, 솔직하게 표현하고, 다같이 으쌰으쌰하는 순간을 만듭니다. 부스터가 있으면 팀 채널이 조용할 틈이 없어요.',
     traits: ['분위기 메이커', '솔직함', '추진력', '리액션 장인'],
     manual: ['반응해주면 힘이 나요. 이모지 하나도 좋아요', '제가 너무 앞서가면 “잠깐!” 하고 불러주세요', '불편한 게 있으면 돌려 말하지 말고 바로 말해주세요'],
     careful: '팀 채널이 조용하고 아무도 반응하지 않을 때'
   },
   {
-    ch: '🫧', short: '레귤러', name: '말랑 레귤러', en: 'REGULARIZER', gives: '안정감',
+    ch: '🫧', short: '레귤러', name: '말랑 레귤러', en: 'REGULARIZER',
     desc: '팀이 과열되지 않게 균형을 잡아주는 정규화 담당이에요. 잘 들어주고, 빈틈을 조용히 메우고, 갈등이 생기면 양쪽을 이어줍니다. 덕분에 팀이 한쪽으로 오버피팅되지 않아요.',
     traits: ['경청', '배려', '중재자', '팀의 버팀목'],
     manual: ['제가 괜찮다고 해도 한 번 더 물어봐 주세요', '결정이 필요할 땐 의견을 직접 물어봐 주세요', '고맙다는 말 한마디가 큰 힘이 돼요'],
     careful: '팀 분위기가 날카로워지고 서로 말을 아낄 때'
   },
   {
-    ch: '✅', short: '밸리데이터', name: '꼼꼼 밸리데이터', en: 'VALIDATOR', gives: '기준과 마무리',
+    ch: '✅', short: '밸리데이터', name: '꼼꼼 밸리데이터', en: 'VALIDATOR',
     desc: '검증 세트처럼 팀 결과물을 꼼꼼히 확인하는 팀원이에요. 일정, 역할, 품질을 챙기고 흐지부지되는 걸 싫어합니다. 이 사람 덕분에 팀 결과물이 제때, 제대로 완성돼요.',
     traits: ['책임감', '일정 관리', '품질 체크', '마무리 장인'],
     manual: ['맡은 일의 진행 상황을 중간중간 공유해주세요', '일정이 밀릴 것 같으면 미리 알려주세요', '제 피드백은 사람이 아니라 결과물에 대한 거예요'],
     careful: '정한 약속이나 마감이 말없이 지켜지지 않을 때'
   },
   {
-    ch: '🔍', short: '딥러너', name: '깊이 파는 딥러너', en: 'DEEP LEARNER', gives: '깊은 통찰',
+    ch: '🔍', short: '딥러너', name: '깊이 파는 딥러너', en: 'DEEP LEARNER',
     desc: '이름처럼 깊게 파고드는 팀원이에요. 조용히 관찰하고, 근거와 원리를 찾아보고, 정리된 생각을 꺼냅니다. 어려운 문제가 생기면 팀이 가장 먼저 찾게 되는 사람이에요.',
     traits: ['깊은 사고', '관찰력', '원리 탐구', '근거 중심'],
     manual: ['바로 대답하지 않아도 생각 중이에요. 조금만 기다려 주세요', '회의 안건은 미리 공유해주면 더 좋은 의견을 낼 수 있어요', '텍스트로 의견을 남기는 것도 편하게 받아주세요'],
@@ -461,14 +532,27 @@ const EL = [
   }
 ];
 
-const TIMES = [
-  { emo: '🌅', name: '아침형', range: '06~11시' },
-  { emo: '☀️', name: '낮형', range: '11~17시' },
-  { emo: '🌇', name: '저녁형', range: '17~22시' },
-  { emo: '🌙', name: '올빼미형', range: '22시 이후' }
+// 시간 선택지
+const COLLAB = [
+  { emo: '🌅', label: '오전 9~12시', s: 9, e: 12 },
+  { emo: '☀️', label: '점심 이후 13~16시', s: 13, e: 16 },
+  { emo: '🌇', label: '늦은 오후 16~19시', s: 16, e: 19 },
+  { emo: '🔄', label: '언제든 좋아요', s: 9, e: 19, flex: true }
+];
+const CONTACT = [
+  { emo: '🍚', label: '저녁 9시까지', end: 21 },
+  { emo: '🛁', label: '밤 10시까지', end: 22 },
+  { emo: '🌙', label: '늦게까지도 괜찮아요', end: 23, late: true },
+  { emo: '📅', label: '그날그날 공유', end: null }
+];
+const WEEKEND = [
+  { emo: '😴', label: '주말엔 쉬고 싶어요' },
+  { emo: '☀️', label: '토요일 낮 잠깐 OK' },
+  { emo: '🌇', label: '일요일 오후 OK' },
+  { emo: '💬', label: '메시지는 편하게 OK' }
 ];
 
-// kind: 'el' = 캐릭터 문항(tp = 캐릭터 인덱스), 'time' = 시간대 문항(tm = 시간대 인덱스)
+// kind: 'el' 캐릭터 문항(tp) / 'collab' 'contact' 'weekend' 시간 문항(v)
 const QS = [
   { kind: 'el', cat: '나는 어떤 사람', q: '처음 만난 팀원들과의 첫 음성 회의, 나는?', opts: [
     { t: '먼저 인사하고 분위기를 띄운다', tp: 1 },
@@ -477,32 +561,25 @@ const QS = [
     { t: '다른 사람 말에 맞장구치며 들어준다', tp: 2 },
     { t: '일정과 진행 방식부터 정리하자고 한다', tp: 3 }
   ]},
-  { kind: 'el', cat: '나는 어떤 사람', q: '주변 사람들이 나를 주로 이렇게 말한다.', opts: [
-    { t: '“믿고 맡길 수 있는 사람”', tp: 3 },
-    { t: '“곁에 있으면 편한 사람”', tp: 2 },
-    { t: '“생각이 깊은 사람”', tp: 4 },
-    { t: '“늘 새로운 걸 해보는 사람”', tp: 0 },
-    { t: '“같이 있으면 에너지가 생기는 사람”', tp: 1 }
-  ]},
-  { kind: 'time', cat: '선호 시간', q: '나는 언제 가장 집중이 잘 될까?', opts: [
-    { t: '🌅 아침 (06~11시)', tm: 0 },
-    { t: '☀️ 낮 (11~17시)', tm: 1 },
-    { t: '🌇 저녁 (17~22시)', tm: 2 },
-    { t: '🌙 밤 (22시 이후)', tm: 3 }
-  ]},
   { kind: 'el', cat: '팀플 태도', q: '역할을 나눌 때 내가 끌리는 일은?', opts: [
     { t: '팀원 사이를 연결하고 빈틈을 메우는 일', tp: 2 },
     { t: '기획하고 새로운 기능을 실험하는 일', tp: 0 },
     { t: '어려운 기술 문제를 깊게 파는 일', tp: 4 },
     { t: '발표하고 팀 분위기를 챙기는 일', tp: 1 },
-    { t: '일정 관리, 코드 리뷰, 품질 체크', tp: 3 }
+    { t: '일정 관리와 결과물 품질 체크', tp: 3 }
+  ]},
+  { kind: 'collab', cat: '⏰ 협업 시간', q: '수업 시간(9~19시) 중 팀원과 같이 작업하거나 회의하기 좋은 때는?', opts: [
+    { t: '🌅 오전 9~12시 · 하루 계획 맞추고 출발', v: 0 },
+    { t: '☀️ 점심 이후 13~16시 · 본격 작업 모드', v: 1 },
+    { t: '🌇 늦은 오후 16~19시 · 오늘 한 것 모아서 정리', v: 2 },
+    { t: '🔄 언제든 좋아요 · 팀에 맞출게요', v: 3 }
   ]},
   { kind: 'el', cat: '팀플 태도', q: '내 작업 진행 상황을 팀에 공유하는 나의 방식은?', opts: [
     { t: '어느 정도 결과가 나왔을 때 한 번에 정리해서 공유한다', tp: 4 },
     { t: '매일 팀 채널에 짧게라도 근황을 남긴다', tp: 1 },
     { t: '진행률과 남은 일을 정해진 형식으로 정리해 올린다', tp: 3 },
     { t: '새로 시도해본 게 생기면 신나서 바로 공유한다', tp: 0 },
-    { t: '팀원이 물어보면 그때 자세히 알려준다', tp: 2 }
+    { t: '내 것을 올리면서 팀원들 진행 상황도 같이 물어본다', tp: 2 }
   ]},
   { kind: 'el', cat: '팀플 태도', q: '자고 일어나니 팀 채팅이 100개 넘게 쌓여 있다.', opts: [
     { t: '결정된 사항과 내 할 일만 골라서 정리한다', tp: 3 },
@@ -511,32 +588,38 @@ const QS = [
     { t: '천천히 흐름을 파악한 뒤 필요한 의견만 남긴다', tp: 4 },
     { t: '다 읽고 “제가 놓친 거 있으면 알려주세요” 하고 남긴다', tp: 2 }
   ]},
-  { kind: 'time', cat: '선호 시간', q: '팀 회의 시간을 내가 정할 수 있다면?', opts: [
-    { t: '☕ 오전 8시 · 모닝커피 들고 갓생 회의', tm: 0 },
-    { t: '🍚 저녁 8시 · 저녁 먹고 든든할 때', tm: 2 },
-    { t: '🛁 밤 10시 · 씻고 나와서 개운하게', tm: 2.5 },
-    { t: '🌙 새벽 1시 · 새벽 감성 풀가동, 아이디어 폭발', tm: 3 }
+  { kind: 'contact', cat: '⏰ 연락 시간', q: '수업이 끝난 뒤(19시 이후), 팀 연락은 언제까지 괜찮아요?', opts: [
+    { t: '🍚 저녁 9시까지', v: 0 },
+    { t: '🛁 밤 10시까지', v: 1 },
+    { t: '🌙 늦게까지도 괜찮아요 (11시 이후도 OK)', v: 2 },
+    { t: '📅 날마다 달라서 그날그날 공유할게요', v: 3 }
   ]},
   { kind: 'el', cat: '갈등 대처', q: '팀원의 말투에 서운함을 느꼈다. 나는?', opts: [
     { t: '바로 말하기보다 하루쯤 지나 마음이 정리되면 이야기한다', tp: 4 },
     { t: '그 자리에서 솔직하게 말한다', tp: 1 },
-    { t: '다른 일에 집중하며 털어버린다', tp: 0 },
+    { t: '분위기를 바꿔 대화를 이어가고, 나중에 가볍게 꺼낸다', tp: 0 },
     { t: '같은 일이 반복되지 않게 소통 규칙을 정하자고 제안한다', tp: 3 },
     { t: '내가 오해한 건 아닌지 먼저 생각해본다', tp: 2 }
   ]},
-  { kind: 'el', cat: '갈등 대처', q: '팀원 두 명이 코드 리뷰와 머지 방식을 두고 언성이 높아졌다.', opts: [
+  { kind: 'el', cat: '갈등 대처', q: '팀원 두 명이 작업 방식을 두고 언성이 높아졌다.', opts: [
     { t: '양쪽 이야기를 각각 들어주며 중재한다', tp: 2 },
     { t: '“이렇게 해보면 어때요?” 새로운 방식을 제안한다', tp: 0 },
-    { t: '머지 규칙을 팀 전체가 같이 정하자고 한다', tp: 3 },
+    { t: '앞으로의 작업 규칙을 팀 전체가 같이 정하자고 한다', tp: 3 },
     { t: '“잠깐 쉬고 음성으로 얘기해요!” 분위기를 푼다', tp: 1 },
     { t: '한 발 떨어져서 무엇이 문제였는지 살펴본다', tp: 4 }
   ]},
   { kind: 'el', cat: '갈등 대처', q: '최종 발표 일주일 전, 한 팀원이 이틀째 연락이 없다.', opts: [
     { t: '걱정돼서 바로 DM과 멘션을 보낸다', tp: 1 },
     { t: '그 팀원이 맡은 작업이 어디까지 됐는지 먼저 확인한다', tp: 4 },
-    { t: '남은 일정과 역할을 다시 나눠 대비한다', tp: 3 },
+    { t: '팀장·매니저에게 상황을 공유하고 일정과 역할을 다시 나눈다', tp: 3 },
     { t: '그 몫을 다른 방법으로 채울 아이디어를 낸다', tp: 0 },
     { t: '“괜찮으세요? 편할 때 연락 주세요” 부담 없게 메시지를 남긴다', tp: 2 }
+  ]},
+  { kind: 'weekend', cat: '⏰ 주말', q: '주말에 팀 프로젝트 연락은 어떻게 하고 싶어요?', opts: [
+    { t: '😴 주말엔 쉬고 싶어요 · 급한 일만 연락', v: 0 },
+    { t: '☀️ 토요일 낮에 잠깐은 괜찮아요', v: 1 },
+    { t: '🌇 일요일 오후, 다음 주 준비 정도는 OK', v: 2 },
+    { t: '💬 주말에도 메시지는 편하게 OK', v: 3 }
   ]},
   { kind: 'el', cat: '의견 조율', q: '데이터에 문제가 생겨 성능이 안 나온다. 해결 방향은 어떻게 정할까?', opts: [
     { t: '원인부터 분석해서 근거를 들고 이야기한다', tp: 4 },
@@ -544,6 +627,13 @@ const QS = [
     { t: '해결 방법 후보를 여러 개 빠르게 제안한다', tp: 0 },
     { t: '관련된 팀원들끼리 먼저 충분히 이야기해보게 한다', tp: 2 },
     { t: '“다같이 바로 음성 회의 해요!” 팀을 모은다', tp: 1 }
+  ]},
+  { kind: 'el', cat: '의견 조율', q: '발표 3일 전, 성능을 더 올릴지 지금 버전으로 마감할지 의견이 갈린다.', opts: [
+    { t: '남은 시간에 해볼 수 있는 새로운 방법을 제안한다', tp: 0 },
+    { t: '일정 기준으로 지금 버전을 확정하고, 개선은 발표 후 과제로 남긴다', tp: 3 },
+    { t: '팀원들이 각자 어떻게 생각하는지 한 명씩 물어본다', tp: 2 },
+    { t: '추가 실험이 정말 효과가 있을지 근거부터 따져본다', tp: 4 },
+    { t: '“여기까지 온 것도 대단해요!” 사기를 올리고 빠르게 정하자고 한다', tp: 1 }
   ]},
   { kind: 'el', cat: '의견 조율', q: '회의에서 결정이 안 나고 계속 길어진다.', opts: [
     { t: '“투표로 정해요!”', tp: 1 },
@@ -554,28 +644,27 @@ const QS = [
   ]}
 ];
 
-// 궁합 풀이 문구
-const SAENG_TIP = [ // i가 (i+1)을 부스트
-  '제너레이터의 아이디어에 부스터가 시동을 걸어요. 새 기능 회의는 둘이 먼저 시작해보세요.',
-  '부스터가 올린 텐션을 레귤러가 안정적으로 받쳐줘요. 팀 회고나 이벤트는 둘이 함께 이끌어보세요.',
-  '레귤러가 다진 팀워크 위에서 밸리데이터가 마무리를 해내요. 일정 관리는 둘이 짝을 이뤄보세요.',
-  '밸리데이터가 세운 기준 안에서 딥러너가 깊이 파고들어요. 기술 검토는 둘이 함께 해보세요.',
-  '딥러너의 깊은 생각이 제너레이터의 아이디어를 키워줘요. 기획 단계에서 둘이 자주 이야기해보세요.'
-];
-const GEUK_TIP = { // 'a-b' : 서로 다른 속도와 방식
-  '0-2': '제너레이터의 새 아이디어가 레귤러의 안정감을 흔들 수 있어요. 방향을 바꿀 땐 이유와 함께 미리 공유해주세요.',
-  '1-3': '부스터의 즉흥과 밸리데이터의 원칙이 부딪히기 쉬워요. 정할 건 밸리데이터가, 분위기는 부스터가 맡는 식으로 역할을 나눠보세요.',
-  '2-4': '레귤러는 빨리 정리하고 싶고, 딥러너는 더 생각할 시간이 필요해요. 결정 마감 시간을 같이 정해두세요.',
-  '3-0': '밸리데이터의 검증이 제너레이터의 아이디어를 너무 일찍 자를 수 있어요. 아이디어 단계에서는 평가를 잠시 미뤄주세요.',
-  '4-1': '부스터가 빠르게 말하면 딥러너가 조용해질 수 있어요. 부스터는 질문으로 말을 맺고, 딥러너는 텍스트로라도 의견을 남겨주세요.'
+// 궁합 풀이 (조합별 직접 작성) — 각 캐릭터마다 시너지 짝 2명
+const PAIRS = {
+  '0-1': { rel: '시너지', tip: '아이디어와 추진력이 만난 조합이에요. 둘 다 빨라서 일을 벌이기 쉬우니, 마무리 담당을 미리 정해두세요.' },
+  '0-3': { rel: '시너지', tip: '아이디어를 내고 검증하는 실험 사이클이 완성되는 조합이에요. 브레인스토밍할 때는 평가를 잠시 미뤄주세요.' },
+  '1-2': { rel: '시너지', tip: '부스터의 텐션과 레귤러의 안정감이 균형을 이뤄요. 부스터가 레귤러의 의견을 먼저 물어봐 주세요.' },
+  '2-4': { rel: '시너지', tip: '기다려주는 레귤러와 깊은 답을 가져오는 딥러너예요. 둘 다 조용한 편이라 하루 한 번 진행 상황을 공유해요.' },
+  '3-4': { rel: '시너지', tip: '정해진 기준 안에서 깊이 파고드는 조합이에요. 밸리데이터가 마감을 한 번씩 짚어주세요.' },
+  '0-2': { rel: '보완형', tip: '잦은 방향 전환에 레귤러가 지칠 수 있어요. 방향을 바꿀 땐 이유를 함께 말하고 “괜찮아요?” 한 번 더 물어봐 주세요.' },
+  '0-4': { rel: '보완형', tip: '속도와 근거가 만난 조합이에요. “작은 실험 1개 → 딥러너가 분석” 순서로 가면 둘 다 편해요.' },
+  '1-3': { rel: '보완형', tip: '즉흥과 원칙이 만난 조합이에요. 정하는 건 밸리데이터가, 팀을 움직이는 건 부스터가 맡아보세요.' },
+  '1-4': { rel: '보완형', tip: '딥러너가 말할 타이밍을 놓치기 쉬워요. 부스터는 질문으로 말을 맺고, 딥러너는 텍스트로라도 의견을 남겨주세요.' },
+  '2-3': { rel: '보완형', tip: '“모두 납득할 때까지”와 “정한 시간 안에”가 만났어요. 결정 마감 시간을 미리 정하고, 피드백은 결과물에만 해주세요.' },
+  '0-0': { rel: '닮은꼴', tip: '아이디어가 넘치는 조합이에요. 대신 “언제까지 정하자”는 마감을 꼭 같이 정하세요.' },
+  '1-1': { rel: '닮은꼴', tip: '에너지가 두 배예요. 감정이 과열될 땐 10분 쉬었다가 다시 이야기하세요.' },
+  '2-2': { rel: '닮은꼴', tip: '서로 편안한 조합이에요. 결정이 늦어질 수 있으니 결정 담당을 정해두세요.' },
+  '3-3': { rel: '닮은꼴', tip: '완성도가 높은 조합이에요. 서로 기준이 다를 땐 문서로 맞춰두세요.' },
+  '4-4': { rel: '닮은꼴', tip: '깊이 있는 조합이에요. 둘 다 조용할 수 있으니 정기 공유 시간을 잡아두세요.' }
 };
-const SAME_TIP = [
-  '아이디어가 넘치는 조합이에요. 대신 “언제까지 정하자”는 마감을 꼭 같이 정하세요.',
-  '에너지가 두 배예요. 감정이 과열될 땐 10분 쉬었다가 다시 이야기하세요.',
-  '서로 편안한 조합이에요. 결정이 늦어질 수 있으니 결정 담당을 정해두세요.',
-  '완성도가 높은 조합이에요. 서로 기준이 다를 땐 문서로 맞춰두세요.',
-  '깊이 있는 조합이에요. 둘 다 조용할 수 있으니 정기 공유 시간을 잡아두세요.'
-];
+const pairKey = (a, b) => a <= b ? `${a}-${b}` : `${b}-${a}`;
+const synergyOf = i => [0, 1, 2, 3, 4].filter(j => j !== i && PAIRS[pairKey(i, j)].rel === '시너지');
+
 const TEAM_MISSING = [
   '💡 제너레이터가 없어요. 브레인스토밍 시간을 따로 잡아 새로운 시도를 해보세요.',
   '⚡ 부스터가 없어요. 매일 아침 한 줄 인사를 팀 규칙으로 정해보세요.',
@@ -590,25 +679,42 @@ const TEAM_MANY = [
   '✅ 밸리데이터가 많아요. 기준이 여러 개가 되지 않도록 팀 기준을 하나로 정리하세요.',
   '🔍 딥러너가 많아요. 각자 몰입하다 연락이 끊기지 않게 공유 시간을 정하세요.'
 ];
+const TEAM_TYPE = ['💡 아이디어 공장 팀', '⚡ 추진력 만렙 팀', '🫧 다정한 팀워크 팀', '✅ 완성도 장인 팀', '🔍 신중한 연구 팀'];
 
 const TOTAL = QS.length;
+const EL_TOTAL = QS.filter(q => q.kind === 'el').length;
 let cur = 0, answers = new Array(TOTAL).fill(null);
 let who = { kisu: '', team: '', name: '' };
-let mine = null; // { el, tm }
+let mine = null; // { el, sub, dist, collab, contact, weekend }
 let members = [];
 
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const nameKey = s => String(s).replace(/\s+/g, '');
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => { s.hidden = s.id !== id; });
   window.scrollTo(0, 0);
 }
 
-/* QUIZ */
-function start() {
+/* 시작: 1인 1회 확인 */
+async function start() {
   who = { kisu: $('inp-kisu').value.trim(), team: $('inp-team').value.trim(), name: $('inp-name').value.trim() };
   if (!who.kisu || !who.team || !who.name) { $('err').hidden = false; return; }
   $('err').hidden = true;
+  if (WEBHOOK_URL) {
+    const btn = $('btn-start'); btn.disabled = true; btn.textContent = '응답 기록 확인 중...';
+    try {
+      const res = await fetch(`${WEBHOOK_URL}?mode=person&kisu=${encodeURIComponent(who.kisu)}&name=${encodeURIComponent(nameKey(who.name))}`);
+      const p = await res.json();
+      if (p && p.el !== undefined && p.el !== '') {
+        mine = normalize(p);
+        if (String(p.team) !== String(who.team)) postData({ action: 'move', kisu: who.kisu, team: who.team, name: who.name, nameKey: nameKey(who.name) });
+        renderResult(true);
+        return;
+      }
+    } catch (e) { /* 확인 실패 시 그대로 진행 */ }
+    finally { btn.disabled = false; btn.textContent = '내 케미 캐릭터 찾기'; }
+  }
   cur = 0; answers = new Array(TOTAL).fill(null);
   show('sc-quiz'); renderQ();
 }
@@ -632,7 +738,6 @@ function renderQ() {
   $('btn-next').disabled = answers[cur] === null;
   $('btn-next').textContent = cur === TOTAL - 1 ? '학습 완료! 결과 보기 🧪' : '다음 →';
 }
-
 function pick(i) {
   answers[cur] = i;
   document.querySelectorAll('.opt').forEach((b, idx) => b.classList.toggle('sel', idx === i));
@@ -640,56 +745,76 @@ function pick(i) {
 }
 function next() {
   if (answers[cur] === null) return;
-  if (cur < TOTAL - 1) { cur++; renderQ(); } else showResult();
+  if (cur < TOTAL - 1) { cur++; renderQ(); } else finish();
 }
 
 function compute() {
-  const s = [0, 0, 0, 0, 0];
-  const tms = [];
+  const s = [0, 0, 0, 0, 0], t = {};
   QS.forEach((q, qi) => {
     const o = q.opts[answers[qi]];
-    if (q.kind === 'el') s[o.tp]++; else tms.push(o.tm);
+    if (q.kind === 'el') s[o.tp]++; else t[q.kind] = o.v;
   });
-  let el = 0;
-  s.forEach((v, i) => { if (v > s[el]) el = i; });
-  const tied = s.map((v, i) => v === s[el] ? i : -1).filter(i => i >= 0);
-  if (tied.length > 1) { // 동점이면 마지막에 고른 답 쪽 캐릭터를 우선
-    for (let qi = TOTAL - 1; qi >= 0; qi--) {
-      if (QS[qi].kind !== 'el') continue;
-      const tp = QS[qi].opts[answers[qi]].tp;
-      if (tied.includes(tp)) { el = tp; break; }
-    }
-  }
-  const tm = Math.min(3, Math.max(0, Math.round((2 * tms[0] + tms[1]) / 3))); // 집중 시간에 가중치
-  return { s, el, tm };
+  // 동점이면 마지막에 고른 답 쪽을 우선
+  const lastIdx = i => { for (let qi = TOTAL - 1; qi >= 0; qi--) if (QS[qi].kind === 'el' && QS[qi].opts[answers[qi]].tp === i) return qi; return -1; };
+  const order = [0, 1, 2, 3, 4].sort((a, b) => (s[b] - s[a]) || (lastIdx(b) - lastIdx(a)));
+  return { el: order[0], sub: order[1], dist: s, collab: t.collab, contact: t.contact, weekend: t.weekend };
+}
+function normalize(p) {
+  let dist = p.dist;
+  if (typeof dist === 'string') { try { dist = JSON.parse(dist); } catch (e) { dist = null; } }
+  const el = +p.el;
+  return {
+    el, sub: p.sub === undefined || p.sub === '' ? (el + 1) % 5 : +p.sub,
+    dist: Array.isArray(dist) ? dist.map(Number) : [0, 1, 2, 3, 4].map(i => i === el ? 1 : 0),
+    collab: p.collab === undefined || p.collab === '' ? 3 : +p.collab,
+    contact: p.contact === undefined || p.contact === '' ? 3 : +p.contact,
+    weekend: p.weekend === undefined || p.weekend === '' ? 0 : +p.weekend
+  };
 }
 
-function showResult() {
-  const { s, el, tm } = compute();
-  mine = { el, tm };
-  const e = EL[el], t = TIMES[tm];
-  const total = s.reduce((a, b) => a + b, 0);
+function finish() {
+  mine = compute();
+  renderResult(false);
+  postData({
+    action: 'save', kisu: who.kisu, team: who.team, name: who.name, nameKey: nameKey(who.name),
+    element: EL[mine.el].name, subName: EL[mine.sub].name, el: mine.el, sub: mine.sub,
+    dist: JSON.stringify(mine.dist), collab: mine.collab, contact: mine.contact, weekend: mine.weekend
+  }, true);
+}
 
-  const seal = $('res-seal'); seal.className = `seal big e${el}`; seal.textContent = e.ch;
+function timeLines(p) {
+  return [
+    ['🏫 평일 협업', `${COLLAB[p.collab].emo} ${COLLAB[p.collab].label}`],
+    ['📱 평일 연락', `${CONTACT[p.contact].emo} ${CONTACT[p.contact].label}`],
+    ['🗓 주말', `${WEEKEND[p.weekend].emo} ${WEEKEND[p.weekend].label}`]
+  ];
+}
+
+function renderResult(isExisting) {
+  const e = EL[mine.el], sb = EL[mine.sub];
+  const total = mine.dist.reduce((a, b) => a + b, 0) || 1;
+  $('res-eyebrow').textContent = isExisting ? '이미 응답한 결과예요 · 나의 케미 캐릭터는' : '학습 완료! 나의 케미 캐릭터는';
+  const seal = $('res-seal'); seal.className = `seal big e${mine.el}`; seal.textContent = e.ch;
   $('res-who').textContent = `${who.kisu}기 · ${who.team}팀 · ${who.name}`;
   $('res-name').textContent = `${e.ch} ${e.name}`;
-  $('res-tags').innerHTML = `<span class="tag">${e.en}</span><span class="tag">${t.emo} ${t.name} · ${t.range}</span>`;
+  $('res-sub').textContent = `서브 캐릭터 · ${sb.ch} ${sb.name}`;
+  $('res-tags').innerHTML = `<span class="tag">${e.en}</span><span class="tag">서브 ${sb.en}</span>`;
   $('res-dist').innerHTML = EL.map((x, i) =>
     `<div class="dist-row e${i}"><span class="seal sm e${i}">${x.ch}</span>` +
-    `<div class="dist-bar"><i style="width:${(s[i] / total) * 100}%"></i></div>` +
-    `<span class="dist-val">${Math.round((s[i] / total) * 100)}%</span></div>`).join('');
+    `<div class="dist-bar"><i style="width:${(mine.dist[i] / total) * 100}%"></i></div>` +
+    `<span class="dist-val">${Math.round((mine.dist[i] / total) * 100)}%</span></div>`).join('');
   $('res-desc').textContent = e.desc;
   $('res-traits').innerHTML = e.traits.map(x => `<span class="trait">${x}</span>`).join('');
   $('res-manual').innerHTML = e.manual.map(x => `<li>${x}</li>`).join('');
   $('res-careful').textContent = e.careful;
-  const from = (el + 4) % 5, to = (el + 1) % 5;
-  $('res-rel').innerHTML =
-    `<div class="rel-item"><span class="seal e${from}">${EL[from].ch}</span><span><b>나를 부스트해주는 캐릭터</b>${EL[from].name}</span></div>` +
-    `<div class="rel-item"><span class="seal e${to}">${EL[to].ch}</span><span><b>내가 부스트해주는 캐릭터</b>${EL[to].name}</span></div>`;
+  $('res-time').innerHTML = timeLines(mine).map(([k, v]) => `<div><b>${k}</b><span>${v}</span></div>`).join('');
+  $('res-rel').innerHTML = synergyOf(mine.el).map(j =>
+    `<div class="rel-item"><span class="seal e${j}">${EL[j].ch}</span><span><b>시너지</b>${EL[j].name}</span></div>`).join('');
 
   $('share-text').textContent =
 `[${who.team}팀] ${who.name}의 케미 캐릭터
-${e.ch} ${e.name}  |  ${t.emo} ${t.name}
+${e.ch} ${e.name}  (서브 ${sb.ch} ${sb.short})
+${timeLines(mine).map(([k, v]) => `${k} : ${v}`).join('\n')}
 
 🤝 나와 일할 때 이렇게 해주세요
 ${e.manual.map(x => '- ' + x).join('\n')}
@@ -697,73 +822,106 @@ ${e.manual.map(x => '- ' + x).join('\n')}
 😥 이럴 땐 조금 힘들어요
 - ${e.careful}`;
 
+  const st = $('sub-status');
+  if (isExisting) { st.hidden = false; st.textContent = '테스트는 1인 1회만 응답할 수 있어요. 다시 하고 싶다면 매니저에게 요청해 주세요.'; }
+  else st.hidden = true;
   show('sc-result');
-  submit(e, t);
 }
 
-function submit(e, t) {
+function postData(body, showStatus) {
   if (!WEBHOOK_URL) return;
-  const el = $('sub-status'); el.hidden = false; el.textContent = '결과 저장 중...';
-  fetch(WEBHOOK_URL, {
-    method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ kisu: who.kisu, team: who.team, name: who.name, element: e.name, time: t.name, el: mine.el, tm: mine.tm })
-  }).then(() => { el.textContent = '결과가 저장됐어요.'; })
-    .catch(() => { el.textContent = '저장에 실패했어요. 결과 확인과 복사는 그대로 할 수 있어요.'; });
+  const el = $('sub-status');
+  if (showStatus) { el.hidden = false; el.textContent = '결과 저장 중...'; }
+  fetch(WEBHOOK_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body) })
+    .then(() => { if (showStatus) el.textContent = '결과가 저장됐어요.'; })
+    .catch(() => { if (showStatus) el.textContent = '저장에 실패했어요. 결과 확인과 복사는 그대로 할 수 있어요.'; });
 }
 
-function copy() {
-  const text = $('share-text').textContent, btn = $('btn-copy');
-  const done = msg => { btn.textContent = msg; setTimeout(() => { btn.textContent = '팀 채널에 올릴 결과 복사'; }, 2200); };
+function copyText(text, btn, label, selectEl) {
+  const done = msg => { btn.textContent = msg; setTimeout(() => { btn.textContent = label; }, 2200); };
   const fallback = () => {
-    const r = document.createRange(); r.selectNodeContents($('share-text'));
+    const r = document.createRange(); r.selectNodeContents(selectEl);
     const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
     done('위 텍스트를 직접 복사해주세요');
   };
   try { navigator.clipboard.writeText(text).then(() => done('복사했어요'), fallback); } catch (e) { fallback(); }
 }
 
-/* 궁합 */
-function relation(a, b) {
-  if (a === b) return 'same';
-  if ((a + 1) % 5 === b || (b + 1) % 5 === a) return 'saeng';
-  return 'geuk';
-}
-function pairInfo(A, B) {
-  const r = relation(A.el, B.el);
-  const elScore = r === 'saeng' ? 94 : r === 'same' ? 84 : 76;
-  const d = Math.abs(A.tm - B.tm);
-  const tmScore = [100, 85, 65, 50][d];
-  const score = Math.round(elScore * 0.75 + tmScore * 0.25);
-  let label, text;
-  if (r === 'saeng') {
-    const [g, t] = (A.el + 1) % 5 === B.el ? [A, B] : [B, A];
-    label = '시너지';
-    text = `${esc(g.name)}님의 ${EL[g.el].gives} 덕분에 ${esc(t.name)}님이 더 힘을 내요. ${SAENG_TIP[g.el]}`;
-  } else if (r === 'same') {
-    label = '닮은꼴';
-    text = SAME_TIP[A.el];
-  } else {
-    const [a, b] = (A.el + 2) % 5 === B.el ? [A, B] : [B, A];
-    label = '성장형';
-    text = `서로 달라서 배울 게 많은 사이예요. ${GEUK_TIP[`${a.el}-${b.el}`]}`;
+/* 이미지 저장 */
+async function saveImage(node, filename, btn) {
+  const label = btn.textContent;
+  if (typeof html2canvas === 'undefined') { btn.textContent = '이미지 저장을 불러오지 못했어요'; setTimeout(() => { btn.textContent = label; }, 2200); return; }
+  btn.disabled = true; btn.textContent = '이미지 만드는 중...';
+  try {
+    const bg = getComputedStyle(document.body).backgroundColor;
+    const canvas = await html2canvas(node, { backgroundColor: bg, scale: 2, useCORS: true });
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    btn.textContent = '저장했어요';
+  } catch (e) {
+    btn.textContent = '저장하지 못했어요. 화면을 캡처해 주세요';
+  } finally {
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = label; }, 2200);
   }
-  const tmText = d === 0 ? '활동 시간대가 같아서 바로바로 소통하기 좋아요.'
-    : d === 1 ? '활동 시간대가 가까워요. 겹치는 시간에 회의를 잡으면 딱이에요.'
-    : `${TIMES[A.tm].name}과 ${TIMES[B.tm].name}이라 시간 맞추기가 필요해요. 코어타임을 정하고 그 밖의 시간엔 메시지로 남겨주세요.`;
-  return { score, label, text, tmText };
+}
+
+/* 팀 궁합 */
+function teamScore(ms) {
+  if (ms.length < 2) return 0;
+  const base = { '시너지': 95, '보완형': 86, '닮은꼴': 89 };
+  let sum = 0, n = 0;
+  for (let i = 0; i < ms.length; i++) for (let j = i + 1; j < ms.length; j++) { sum += base[PAIRS[pairKey(ms[i].el, ms[j].el)].rel]; n++; }
+  const distinct = new Set(ms.map(m => m.el)).size;
+  return Math.max(82, Math.min(99, Math.round(sum / n + (distinct - 2) * 1.5)));
 }
 function grade(score) {
-  if (score >= 90) return '천생연분';
-  if (score >= 84) return '찰떡궁합';
-  if (score >= 78) return '환상의 콤비 예감';
-  return '서로 성장하는 사이';
+  if (score >= 93) return '천생연분 💜';
+  if (score >= 88) return '찰떡궁합';
+  return '환상의 콤비 예감';
+}
+function teamType(counts) {
+  const distinct = counts.filter(c => c > 0).length;
+  if (distinct >= 4) return '🌈 올라운더 팀';
+  const max = Math.max(...counts);
+  const tops = counts.map((c, i) => c === max ? i : -1).filter(i => i >= 0);
+  return tops.length > 1 ? '⚖️ 밸런스 팀' : TEAM_TYPE[tops[0]];
+}
+
+function coreTime(ms) {
+  // 평일 협업: 가장 많이 고른 시간대 ('언제든'은 모든 시간대에 1표)
+  const votes = [0, 0, 0];
+  ms.forEach(m => { if (m.collab === 3) votes.forEach((_, k) => votes[k]++); else votes[m.collab]++; });
+  const slot = votes.indexOf(Math.max(...votes));
+  const c = COLLAB[slot];
+  // 평일 연락: 가장 일찍 끝나는 팀원 기준, 늦어도 23시까지
+  const ends = ms.filter(m => CONTACT[m.contact].end).map(m => CONTACT[m.contact].end);
+  const vary = ms.filter(m => m.contact === 3).map(m => m.name);
+  const end = ends.length ? Math.min(23, ...ends) : null;
+  // 주말
+  const rest = ms.filter(m => m.weekend === 0).length;
+  const sat = ms.filter(m => m.weekend === 1 || m.weekend === 3).length;
+  const sun = ms.filter(m => m.weekend === 2 || m.weekend === 3).length;
+  const msg = ms.filter(m => m.weekend === 3).length;
+  let weekend;
+  if (rest >= ms.length / 2) weekend = '쉬기, 급한 일만 팀장에게';
+  else if (sat >= sun) weekend = '토요일 13~16시 중 1시간, 선택 참여';
+  else weekend = '일요일 오후 30분, 다음 주 준비 (선택 참여)';
+  if (rest < ms.length / 2 && msg > ms.length / 2) weekend += ' · 메시지는 편하게, 답은 월요일까지 OK';
+  return {
+    slot, end, vary, weekend,
+    collabText: `${c.s}~${c.e}시 (매일 ${c.s}:30 15분 싱크)`,
+    contactText: end ? `19~${end}시. 이후 메시지는 다음 날 오전에 답해도 돼요` : '팀원 모두 그날그날 팀 채널에 공유',
+  };
 }
 
 const SAMPLE = [
-  { name: '김코드', el: 0, tm: 1 },
-  { name: '이모델', el: 2, tm: 0 },
-  { name: '박데이터', el: 4, tm: 3 },
-  { name: '최에이전트', el: 1, tm: 2 }
+  { name: '김코드', el: 0, sub: 1, collab: 1, contact: 1, weekend: 0 },
+  { name: '이모델', el: 2, sub: 3, collab: 0, contact: 0, weekend: 1 },
+  { name: '박데이터', el: 4, sub: 2, collab: 3, contact: 2, weekend: 0 },
+  { name: '최에이전트', el: 1, sub: 0, collab: 1, contact: 3, weekend: 3 }
 ];
 
 function openTeam() {
@@ -771,78 +929,108 @@ function openTeam() {
   if (who.team && !$('load-team').value) $('load-team').value = who.team;
   if (!members.length) {
     if (mine) {
-      members = [{ name: who.name, el: mine.el, tm: mine.tm }, { name: '', el: 0, tm: 1 }];
+      members = [{ name: who.name, ...mine }];
       $('team-sample-note').hidden = true;
-    } else {
+    } else if (!WEBHOOK_URL) {
       members = SAMPLE.map(m => ({ ...m }));
       $('team-sample-note').hidden = false;
     }
   }
   renderMembers(); renderTeam(); show('sc-team');
+  if (WEBHOOK_URL && $('load-kisu').value && $('load-team').value) loadTeam();
 }
 
+function opt(list, val, fmt) { return list.map((x, k) => `<option value="${k}"${k === val ? ' selected' : ''}>${fmt(x)}</option>`).join(''); }
 function renderMembers() {
   $('members').innerHTML = members.map((m, i) =>
     `<div class="member" data-i="${i}">` +
     `<span class="seal sm e${m.el}">${EL[m.el].ch}</span>` +
     `<input id="m-name-${i}" data-f="name" placeholder="팀원 ${i + 1} 이름" value="${esc(m.name)}" aria-label="팀원 ${i + 1} 이름">` +
-    `<select id="m-el-${i}" class="sel-e" data-f="el" aria-label="팀원 ${i + 1} 캐릭터">${EL.map((e, k) => `<option value="${k}"${k === m.el ? ' selected' : ''}>${e.ch} ${e.short}</option>`).join('')}</select>` +
-    `<select id="m-tm-${i}" class="sel-t" data-f="tm" aria-label="팀원 ${i + 1} 시간대">${TIMES.map((t, k) => `<option value="${k}"${k === m.tm ? ' selected' : ''}>${t.emo} ${t.name}</option>`).join('')}</select>` +
+    `<select id="m-el-${i}" class="sel-e" data-f="el" aria-label="팀원 ${i + 1} 캐릭터">${opt(EL, m.el, e => `${e.ch} ${e.short}`)}</select>` +
     `<button class="del" data-del="${i}" aria-label="팀원 ${i + 1} 삭제">×</button>` +
-    `</div>`).join('');
+    `<div class="times">` +
+    `<select id="m-co-${i}" data-f="collab" aria-label="팀원 ${i + 1} 협업 시간">${opt(COLLAB, m.collab, x => `${x.emo} ${x.label}`)}</select>` +
+    `<select id="m-ct-${i}" data-f="contact" aria-label="팀원 ${i + 1} 연락 시간">${opt(CONTACT, m.contact, x => `${x.emo} ${x.label}`)}</select>` +
+    `<select id="m-we-${i}" data-f="weekend" aria-label="팀원 ${i + 1} 주말">${opt(WEEKEND, m.weekend, x => `${x.emo} ${x.label}`)}</select>` +
+    `</div></div>`).join('');
   $('member-count').textContent = `${members.length}명 / 최대 6명`;
   $('btn-add').hidden = members.length >= 6;
 }
 
+const H0 = 9, H1 = 24;
+const pct = h => `${((h - H0) / (H1 - H0)) * 100}%`;
+const wid = (a, b) => `${((b - a) / (H1 - H0)) * 100}%`;
+
 function renderTeam() {
   const out = $('team-out');
   const ms = members.map((m, i) => ({ ...m, name: m.name.trim() || `팀원 ${i + 1}` }));
-  if (ms.length < 2) { out.innerHTML = '<p class="note">팀원을 2명 이상 입력하면 궁합이 나와요.</p>'; teamCtx = null; syncRules(); return; }
-
-  const pairs = [];
-  for (let i = 0; i < ms.length; i++) for (let j = i + 1; j < ms.length; j++) pairs.push({ A: ms[i], B: ms[j], ...pairInfo(ms[i], ms[j]) });
-  const avg = Math.round(pairs.reduce((a, p) => a + p.score, 0) / pairs.length);
-  const counts = [0, 0, 0, 0, 0]; ms.forEach(m => counts[m.el]++);
-  const best = pairs.reduce((a, p) => p.score > a.score ? p : a, pairs[0]);
-  const care = pairs.reduce((a, p) => p.score < a.score ? p : a, pairs[0]);
-
-  // 추천 코어타임: 양옆 시간대까지 포함해 가장 많은 팀원이 편한 시간대
-  const tc = [0, 0, 0, 0]; ms.forEach(m => tc[m.tm]++);
-  let core = 0, coreFit = -1;
-  for (let k = 0; k < 4; k++) {
-    const fit = tc[k] * 2 + (tc[k - 1] || 0) + (tc[k + 1] || 0);
-    if (fit > coreFit) { coreFit = fit; core = k; }
+  if (ms.length < 2) {
+    out.innerHTML = '<p class="note">팀원이 2명 이상 모이면 궁합이 나와요. 위에서 기수와 팀을 넣고 불러오세요.</p>';
+    teamCtx = null; syncRules(); return;
   }
+  const counts = [0, 0, 0, 0, 0]; ms.forEach(m => counts[m.el]++);
+  const score = teamScore(ms);
+  const ct = coreTime(ms);
 
-  let html = `<div class="card score-hero"><span class="eyebrow">우리 팀 케미 점수</span>` +
-    `<div class="score-num">${avg}<small>점</small></div><div class="score-grade">${grade(avg)}</div>` +
-    `<div class="ohaeng">${EL.map((e, i) => `<span><span class="seal sm e${i}${counts[i] ? '' : ' empty'}">${e.ch}</span>${counts[i]}</span>`).join('')}</div></div>`;
+  let html = `<div id="team-capture">`;
+  html += `<div class="card score-hero"><span class="eyebrow">${esc(rules.team || $('load-team').value || '')}${(rules.team || $('load-team').value) ? '팀 · ' : ''}우리 팀 케미 점수</span>` +
+    `<div class="score-num">${score}<small>점</small></div><div class="score-grade">${grade(score)}</div>` +
+    `<span class="tag" style="margin-top:4px">${teamType(counts)}</span></div>`;
 
-  html += pairCard('🌟 최고의 궁합', best);
-  if (care !== best) html += pairCard('🤝 서로 맞춰가면 더 좋은 사이', care);
+  // 팀원 결과
+  html += `<div class="card"><p class="sec-label">👥 팀원 결과 (${ms.length}명)</p><div class="roster">` +
+    ms.map(m => `<div class="roster-row"><span class="seal sm e${m.el}">${EL[m.el].ch}</span><div><strong>${esc(m.name)}</strong> · ${EL[m.el].name}` +
+      `<span class="meta"> (서브 ${EL[m.sub ?? m.el].ch})</span><div class="meta">${COLLAB[m.collab].emo} ${COLLAB[m.collab].label} · ${CONTACT[m.contact].emo} ${CONTACT[m.contact].label} · ${WEEKEND[m.weekend].emo} ${WEEKEND[m.weekend].label}</div></div></div>`).join('') +
+    `</div></div>`;
 
-  html += `<div class="card"><p class="sec-label">추천 코어타임</p><p>${TIMES[core].emo} <b>${TIMES[core].name} (${TIMES[core].range})</b> 시간대에 회의를 잡으면 가장 많은 팀원이 편해요.</p></div>`;
+  // 팀 구성 지도
+  html += `<div class="card"><p class="sec-label">🗺 팀 구성 지도 · 우리 팀에 있는 힘 / 비어 있는 힘</p><div class="map">` +
+    EL.map((e, i) => {
+      const names = ms.filter(m => m.el === i).map(m => `<span>${esc(m.name)}</span>`).join('');
+      return `<div class="slot e${i}${names ? '' : ' empty'}"><span class="emo">${e.ch}</span><span class="nm">${e.short}</span><div class="who">${names || '<span>비어 있어요</span>'}</div></div>`;
+    }).join('') + `</div></div>`;
 
+  // 시간대 막대
+  const band = COLLAB[ct.slot];
+  html += `<div class="card"><p class="sec-label">⏰ 협업·연락 가능 시간 (평일)</p><div class="tbars">` +
+    ms.map(m => {
+      const co = COLLAB[m.collab], c = CONTACT[m.contact];
+      const ctEnd = c.end ? (c.late ? 24 : c.end) : 21;
+      return `<div class="tbar"><span class="nmx">${esc(m.name)}</span><div class="lane">` +
+        `<i class="band" style="left:${pct(band.s)};width:${wid(band.s, band.e)}"></i>` +
+        (ct.end ? `<i class="band" style="left:${pct(19)};width:${wid(19, ct.end)}"></i>` : '') +
+        `<i class="co${co.flex ? ' flex' : ''}" style="left:${pct(co.s)};width:${wid(co.s, co.e)}"></i>` +
+        `<i class="ct${c.end ? '' : ' vary'}" style="left:${pct(19)};width:${wid(19, ctEnd)}"></i>` +
+        `</div></div>`;
+    }).join('') +
+    `<div class="ticks"><span></span><div class="scale">${[9, 12, 15, 18, 21, 24].map(h => `<span style="left:${pct(h)}">${h}</span>`).join('')}</div></div>` +
+    `</div><div class="legend"><span><i style="background:var(--accent)"></i>협업 선호</span><span><i style="background:var(--water)"></i>연락 가능</span><span><i style="background:var(--earth);opacity:.4"></i>우리 팀 코어타임</span></div>` +
+    `<div class="core"><div>🏫 <b>평일 협업</b> ${ct.collabText}</div><div>📱 <b>평일 연락</b> ${ct.contactText}</div>` +
+    (ct.vary.length && ct.end ? `<div class="note">📅 ${ct.vary.map(esc).join(', ')} 님은 그날그날 연락 가능 시간을 팀 채널에 공유해요.</div>` : '') +
+    `<div>🗓 <b>주말</b> ${ct.weekend}</div></div></div>`;
+
+  // 대화 카드 (점수 없이 행동 팁)
+  const pairs = [];
+  for (let i = 0; i < ms.length; i++) for (let j = i + 1; j < ms.length; j++) pairs.push({ A: ms[i], B: ms[j], ...PAIRS[pairKey(ms[i].el, ms[j].el)] });
+  const relOrder = { '보완형': 0, '닮은꼴': 1, '시너지': 2 };
+  pairs.sort((x, y) => relOrder[x.rel] - relOrder[y.rel]);
+  const card = p => `<div class="talk-card"><div class="pair-head"><span class="seal sm e${p.A.el}">${EL[p.A.el].ch}</span>${esc(p.A.name)} × <span class="seal sm e${p.B.el}">${EL[p.B.el].ch}</span>${esc(p.B.name)}<span class="rel-chip">${p.rel}</span></div><p>${p.tip}</p></div>`;
+  html += `<div class="card"><p class="sec-label">💬 대화 카드 · 이렇게 하면 더 잘 맞아요</p><div class="talk">${pairs.slice(0, 3).map(card).join('')}</div>` +
+    (pairs.length > 3 ? `<details class="more"><summary>대화 카드 모두 보기 (${pairs.length}장)</summary><div class="talk">${pairs.slice(3).map(card).join('')}</div></details>` : '') + `</div>`;
+
+  // 튜닝 팁
   const tips = [...counts.map((c, i) => c >= 3 ? TEAM_MANY[i] : null).filter(Boolean),
                 ...counts.map((c, i) => c === 0 ? TEAM_MISSING[i] : null).filter(Boolean).slice(0, 2)];
-  if (tips.length) html += `<div class="boxed careful"><p class="sec-label">우리 팀 튜닝 팁</p>${tips.map(x => `<p>${x}</p>`).join('')}</div>`;
+  if (tips.length) html += `<div class="boxed careful"><p class="sec-label">🔧 우리 팀 튜닝 팁</p>${tips.map(x => `<p>${x}</p>`).join('')}</div>`;
+  html += `</div>`;
 
-  html += `<div class="card"><details class="pairs"><summary>1:1 궁합 전체 보기 (${pairs.length}쌍)</summary>` +
-    pairs.map(p => `<div class="pair">${pairHead(p)}<p>${p.text}</p><p class="note" style="margin-top:4px">${p.tmText}</p></div>`).join('') +
-    `</details></div>`;
-
-  html += `<div class="boxed manual"><p class="sec-label">이제 팀끼리 이야기해봐요</p><p>1. 서로의 ‘나와 일할 때 이렇게 해주세요’를 돌아가며 읽기<br>2. 궁합 풀이와 튜닝 팁을 보며 이야기 나누기<br>3. 아래 ‘우리 팀 규칙 정하기’를 함께 채우고 팀 채널에 올리기</p></div>`;
+  html += `<div class="save-row"><button class="btn ghost" id="btn-save-team">팀 궁합 결과 이미지로 저장</button></div>`;
+  html += `<div class="boxed manual"><p class="sec-label">이제 팀끼리 이야기해봐요</p><p>1. 서로의 ‘나와 일할 때 이렇게 해주세요’를 돌아가며 읽기<br>2. 대화 카드와 튜닝 팁을 보며 이야기 나누기<br>3. 아래 ‘우리 팀 규칙 정하기’를 함께 채우고 팀 채널에 올리기</p></div>`;
   out.innerHTML = html;
-  teamCtx = { avg, grade: grade(avg), core, tips };
+  $('btn-save-team').onclick = e => saveImage($('team-capture'), `케미러닝_${rules.team || $('load-team').value || '우리'}팀_궁합.png`, e.currentTarget);
+
+  teamCtx = { score, grade: grade(score), ct, tips };
   syncRules();
-}
-function pairHead(p) {
-  return `<div class="pair-head"><span class="seal sm e${p.A.el}">${EL[p.A.el].ch}</span>${esc(p.A.name)} × ` +
-    `<span class="seal sm e${p.B.el}">${EL[p.B.el].ch}</span>${esc(p.B.name)}` +
-    `<span class="rel-chip">${p.label}</span><span class="pair-score">${p.score}점</span></div>`;
-}
-function pairCard(title, p) {
-  return `<div class="card"><p class="sec-label">${title}</p>${pairHead(p)}<p>${p.text}</p><p class="note" style="margin-top:6px">${p.tmText}</p></div>`;
 }
 
 $('members').addEventListener('input', e => {
@@ -850,13 +1038,15 @@ $('members').addEventListener('input', e => {
   const i = +row.dataset.i, f = e.target.dataset.f;
   if (f === 'name') members[i].name = e.target.value;
   else members[i][f] = +e.target.value;
-  if (f === 'el') { const s = row.querySelector('.seal'); s.className = `seal sm e${members[i].el}`; s.textContent = EL[members[i].el].ch; }
+  if (f === 'el') { members[i].sub = members[i].el; const s = row.querySelector('.seal'); s.className = `seal sm e${members[i].el}`; s.textContent = EL[members[i].el].ch; }
   renderTeam();
 });
 $('members').addEventListener('click', e => {
   const b = e.target.closest('[data-del]'); if (!b) return;
   members.splice(+b.dataset.del, 1); renderMembers(); renderTeam();
 });
+$('btn-add').onclick = () => { if (members.length < 6) { members.push({ name: '', el: 0, sub: 0, collab: 3, contact: 1, weekend: 0 }); renderMembers(); renderTeam(); } };
+
 /* 팀 규칙 */
 let teamCtx = null;
 const rules = { team: '', name: '', goal: '', core: '', reply: '', disagree: '', hurt: '', absent: '', extra: '' };
@@ -864,13 +1054,19 @@ let roles = [];
 let coreDirty = false;
 
 function syncRules() {
-  if (!rules.team && who.team) { rules.team = who.team; $('r-team').value = who.team; }
+  if (!rules.team && (who.team || $('load-team').value)) { rules.team = who.team || $('load-team').value; $('r-team').value = rules.team; }
   if (teamCtx && !coreDirty) {
-    const t = TIMES[teamCtx.core];
-    rules.core = `${t.name} ${t.range} 중 매일 2시간`;
+    const c = teamCtx.ct;
+    rules.core = `평일 협업 ${c.collabText}\n평일 연락 ${c.contactText}\n주말 ${c.weekend}`;
     $('r-core').value = rules.core;
   }
-  // 역할: 팀원 목록에 맞춰 다시 그리되 입력값은 유지
+  const end = teamCtx && teamCtx.ct.end;
+  $('reply-chips').innerHTML = [
+    '연락 시간 안에 2시간 내로 답하기',
+    '늦어질 땐 이모지라도 남기기',
+    end ? `${end}시 이후 메시지는 다음 날 오전에 답해도 OK` : '밤 11시 이후 연락은 급할 때만',
+    '주말 메시지는 월요일에 답해도 OK'
+  ].map(x => `<button type="button" class="chip-btn">${esc(x)}</button>`).join('');
   roles.length = members.length;
   $('roles').innerHTML = members.map((m, i) =>
     `<div class="role"><span>${esc(m.name.trim() || `팀원 ${i + 1}`)}</span>` +
@@ -885,16 +1081,17 @@ function rulesText() {
   const head = `[${rules.team || 'N'}팀]${rules.name ? ' ' + rules.name : ''} 팀 규칙`;
   const v = x => x.trim() || '-';
   const roleLines = members.map((m, i) => `  - ${m.name.trim() || `팀원 ${i + 1}`} : ${(roles[i] || '').trim() || '-'}`).join('\n');
+  const core = rules.core.trim() ? '\n' + rules.core.trim().split('\n').map(l => '  - ' + l).join('\n') : ' -';
   return `${head}
 🎯 목표 : ${v(rules.goal)}
-⏰ 코어타임 : ${v(rules.core)}
+⏰ 코어타임 :${core}
 💬 응답 약속 : ${v(rules.reply)}
 👥 역할
 ${roleLines}
 🤝 의견이 다를 때 : ${v(rules.disagree)}
 🚨 서운하거나 힘들 때 : ${v(rules.hurt)}
 🙋 빠지거나 늦을 때 : ${v(rules.absent)}
-✨ 우리 팀만의 규칙 : ${v(rules.extra)}` + (teamCtx ? `\n💞 팀 궁합 : ${teamCtx.avg}점 (${teamCtx.grade})` : '');
+✨ 우리 팀만의 규칙 : ${v(rules.extra)}` + (teamCtx ? `\n💞 팀 케미 : ${teamCtx.score}점 (${teamCtx.grade})` : '');
 }
 function renderRulesPreview() { $('rules-preview').textContent = rulesText(); }
 
@@ -918,45 +1115,40 @@ $('rules').addEventListener('click', e => {
 });
 $('btn-rules-copy').onclick = () => {
   if (!rules.disagree.trim() || !rules.hurt.trim()) { $('rules-err').hidden = false; return; }
-  const btn = $('btn-rules-copy');
-  const done = msg => { btn.textContent = msg; setTimeout(() => { btn.textContent = '팀 규칙 복사하기'; }, 2200); };
-  const fallback = () => {
-    const r = document.createRange(); r.selectNodeContents($('rules-preview'));
-    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
-    done('위 텍스트를 직접 복사해주세요');
-  };
-  try { navigator.clipboard.writeText(rulesText()).then(() => done('복사했어요. 팀 채널에 올려주세요'), fallback); } catch (e) { fallback(); }
+  copyText(rulesText(), $('btn-rules-copy'), '팀 규칙 복사하기', $('rules-preview'));
 };
 
-/* 구글 시트에서 팀원 결과 불러오기 (WEBHOOK_URL이 있을 때만 표시) */
-if (WEBHOOK_URL) $('load-box').hidden = false;
+/* 팀원 결과 불러오기 */
 async function loadTeam() {
   const kisu = $('load-kisu').value.trim(), team = $('load-team').value.trim(), st = $('load-status');
   if (!kisu || !team) { st.textContent = '기수와 팀을 모두 입력해주세요.'; return; }
+  if (!WEBHOOK_URL) { st.textContent = '미리보기에서는 불러오기를 할 수 없어요. 아래 “팀원 정보 직접 입력”을 이용해 주세요.'; return; }
   st.textContent = '불러오는 중...';
   try {
     const res = await fetch(`${WEBHOOK_URL}?kisu=${encodeURIComponent(kisu)}&team=${encodeURIComponent(team)}`);
     const list = await res.json();
     if (!Array.isArray(list) || !list.length) { st.textContent = `${kisu}기 ${team}팀 결과가 아직 없어요. 팀원들이 테스트를 마쳤는지 확인해주세요.`; return; }
-    members = list.slice(0, 6).map(r => ({ name: String(r.name), el: +r.el, tm: +r.tm }));
+    members = list.slice(0, 6).map(r => ({ name: String(r.name), ...normalize(r) }));
     rules.team = team; $('r-team').value = team;
     $('team-sample-note').hidden = true;
     renderMembers(); renderTeam();
-    st.textContent = `${list.length}명의 결과를 불러왔어요.` + (list.length > 6 ? ' 최대 6명까지만 표시돼요.' : '');
+    st.textContent = `${kisu}기 ${team}팀 ${list.length}명의 결과를 불러왔어요.` + (list.length > 6 ? ' 최대 6명까지만 표시돼요.' : '');
   } catch (err) {
     st.textContent = '불러오지 못했어요. 잠시 후 다시 시도하거나 팀원 정보를 직접 입력해주세요.';
   }
 }
 $('btn-load').onclick = loadTeam;
 
-$('btn-add').onclick = () => { if (members.length < 6) { members.push({ name: '', el: 0, tm: 1 }); renderMembers(); renderTeam(); } };
-
 $('btn-start').onclick = start;
 $('btn-back').onclick = () => { if (cur > 0) { cur--; renderQ(); } };
 $('btn-next').onclick = next;
-$('btn-copy').onclick = copy;
+$('btn-copy').onclick = () => copyText($('share-text').textContent, $('btn-copy'), '팀 채널에 올릴 결과 복사', $('share-text'));
+$('btn-save-me').onclick = e => saveImage($('result-capture'), `케미러닝_${who.name || '나'}.png`, e.currentTarget);
 $('btn-retry').onclick = () => show('sc-intro');
-$('btn-team-open').onclick = openTeam;
+$('btn-team-open').onclick = () => {
+  if (!who.kisu) { who.kisu = $('inp-kisu').value.trim(); who.team = $('inp-team').value.trim(); who.name = $('inp-name').value.trim(); }
+  openTeam();
+};
 $('btn-team-from-result').onclick = () => { members = []; openTeam(); };
 $('btn-team-back').onclick = () => show('sc-intro');
 </script>
