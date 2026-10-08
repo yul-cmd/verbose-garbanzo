@@ -292,7 +292,7 @@
     <div class="intro-top">
       <span class="eyebrow">Codeit Sprint · AI Engineer</span>
       <h1>케미 러닝 <span style="font-size:.5em;color:var(--fg-sub);font-weight:400;font-family:var(--font-mono)">Chemi-Learning</span></h1>
-      <p class="intro-sub">🧪 우리 팀 케미, 아직 학습 전이에요!<br>질문 9개로 나의 케미 캐릭터를 찾고, 팀원들과 궁합을 맞춰보세요.</p>
+      <p class="intro-sub">🧪 우리 팀 케미, 아직 학습 전이에요!<br>질문 10개로 나의 케미 캐릭터를 찾고, 팀원들과 궁합을 맞춰보세요.</p>
       <div class="lineup" aria-hidden="true">
         <span class="seal e0">💡</span><span class="seal e1">⚡</span><span class="seal e2">🫧</span><span class="seal e3">✅</span><span class="seal e4">🔍</span>
       </div>
@@ -324,7 +324,7 @@
   <!-- QUIZ -->
   <section id="sc-quiz" class="screen" hidden>
     <div class="prog">
-      <div class="prog-meta"><span id="prog-label">EPOCH · 케미 학습 중</span><span id="prog-count">1 / 9</span></div>
+      <div class="prog-meta"><span id="prog-label">EPOCH · 케미 학습 중</span><span id="prog-count">1 / 10</span></div>
       <div class="track"><div class="fill" id="prog-fill" style="width:0%"></div></div>
     </div>
     <span class="q-cat" id="q-cat"></span>
@@ -622,6 +622,13 @@ const QS = [
     { t: '팀장·매니저에게 상황을 공유하고 일정과 역할을 다시 나눈다', tp: 3 },
     { t: '그 몫을 다른 방법으로 채울 아이디어를 낸다', tp: 0 },
     { t: '“괜찮으세요? 편할 때 연락 주세요” 부담 없게 메시지를 남긴다', tp: 2 }
+  ]},
+  { kind: 'el', cat: 'AI 프로젝트', q: '우리 프로젝트에 딱 맞을 것 같은 새 오픈소스 LLM이 공개됐다!', opts: [
+    { t: '바로 우리 데이터로 붙여서 데모부터 돌려본다', tp: 0 },
+    { t: '모델 카드, 벤치마크, 라이선스부터 꼼꼼히 읽어본다', tp: 4 },
+    { t: '지금 모델과 같은 평가 지표로 비교할 실험 계획을 세운다', tp: 3 },
+    { t: '팀 채널에 링크를 올리고 “이거 같이 써봐요!” 분위기를 띄운다', tp: 1 },
+    { t: '바꾸면 팀원들 작업에 부담이 없을지 먼저 물어본다', tp: 2 }
   ]},
   { kind: 'el', cat: '의견 조율', q: '갑자기 프로젝트 진행 중 문제점을 발견했다! 해결 방향은 어떻게 정할까?', opts: [
     { t: '원인부터 분석해서 근거를 들고 이야기한다', tp: 4 },
