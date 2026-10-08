@@ -102,17 +102,26 @@
   /* QUIZ */
   .prog { display: grid; gap: 8px; margin-bottom: 26px; }
   .prog-meta { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11px; color: var(--fg-sub); }
-  .track { height: 4px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
-  .fill { height: 100%; background: var(--accent); transition: width .35s ease; }
-  .q-cat { display: inline-block; font-size: 12px; font-weight: 500; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 2px 10px; }
-  .q-text { font-size: 21px; font-weight: 700; line-height: 1.5; margin: 12px 0 20px; text-wrap: balance; }
-  .opts { display: grid; gap: 9px; }
-  .opt {
-    display: flex; gap: 12px; align-items: flex-start; text-align: left; width: 100%;
-    padding: 13px 15px; border-radius: 11px; font-size: 14.5px; line-height: 1.55;
-    background: var(--surface); color: var(--fg); border: 1.5px solid var(--line); transition: border-color .15s, background .15s;
+  .track { height: 8px; background: var(--surface2); border-radius: 8px; overflow: hidden; }
+  .fill { height: 100%; background: var(--accent); border-radius: 8px; transition: width .35s ease; }
+  .q-head { display: grid; justify-items: center; text-align: center; gap: 12px; margin-bottom: 22px; }
+  .q-emoji {
+    width: 84px; height: 84px; border-radius: 26px; display: grid; place-items: center; font-size: 46px; line-height: 1;
+    background: var(--surface); border: 2px solid var(--line); box-shadow: 0 6px 0 var(--surface2);
+    animation: pop .35s ease;
   }
+  @keyframes pop { from { transform: scale(.7) rotate(-8deg); opacity: .4; } to { transform: scale(1) rotate(0); opacity: 1; } }
+  .q-cat { display: inline-block; font-size: 12.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 3px 12px; }
+  .q-text { font-family: var(--font-display); font-size: 25px; font-weight: 400; line-height: 1.45; margin: 0; text-wrap: balance; word-break: keep-all; }
+  .opts { display: grid; gap: 10px; }
+  .opt {
+    display: flex; gap: 12px; align-items: center; text-align: left; width: 100%;
+    padding: 15px 16px; border-radius: 14px; font-size: 15.5px; line-height: 1.55; word-break: keep-all;
+    background: var(--surface); color: var(--fg); border: 1.5px solid var(--line); transition: border-color .15s, background .15s, transform .1s;
+  }
+  .opt:active { transform: scale(.99); }
   .opt:hover, .opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+  .opt.sel { font-weight: 700; }
   .opt-dot { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); margin-top: 2px; flex-shrink: 0; display: grid; place-items: center; transition: border-color .15s; }
   .opt.sel .opt-dot { border-color: var(--accent); }
   .opt.sel .opt-dot::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
@@ -165,6 +174,18 @@
   .add-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
   .team-out { display: grid; gap: 14px; margin-top: 20px; }
   .score-hero { text-align: center; display: grid; gap: 6px; justify-items: center; padding: 26px 20px; }
+  .team-emo { font-size: 64px; line-height: 1.1; margin-top: 6px; }
+  .team-name { font-size: 32px; }
+  .team-tag { font-size: 14px; color: var(--fg-sub); }
+  .score-line { display: flex; align-items: baseline; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 8px; padding: 6px 16px; border-radius: 999px; background: var(--accent-soft); }
+  .score-line .score-num { font-size: 30px; }
+  .score-line .score-num small { font-size: 14px; }
+  .score-line .score-grade { font-size: 17px; }
+  .team-type .desc { margin-bottom: 14px; word-break: keep-all; }
+  .tt-grid { display: grid; gap: 8px; }
+  .tt-grid div { display: grid; grid-template-columns: 104px 1fr; gap: 8px; font-size: 14px; line-height: 1.6; padding: 10px 12px; border-radius: 10px; background: var(--surface2); word-break: keep-all; }
+  .tt-grid b { font-weight: 700; }
+  @media (max-width: 460px) { .tt-grid div { grid-template-columns: 1fr; gap: 2px; } }
   .score-num { font-family: var(--font-display); font-size: 56px; font-weight: 700; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
   .score-num small { font-size: 20px; color: var(--fg-sub); }
   .score-grade { font-family: var(--font-display); font-size: 20px; }
@@ -219,7 +240,7 @@
     .member .sel-e { grid-row: 2; } .member .sel-t { grid-row: 3; }
     .member .del { grid-row: 1; grid-column: 3; }
   }
-  @media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .fill { transition: none; } .q-emoji { animation: none; } }
 
   /* v2: 팀원 행 (이름·캐릭터 / 시간 3개) */
   .member { grid-template-columns: 30px minmax(0, 1fr) 128px 28px; row-gap: 6px; }
@@ -317,7 +338,7 @@
         <button class="btn" id="btn-start">내 케미 캐릭터 찾기</button>
         <button class="btn ghost" id="btn-team-open">바로 팀 궁합 보기</button>
       </div>
-      <p class="notice">· 테스트는 <b>1인 1회</b>만 응답할 수 있어요. 이미 응답했다면 저장된 결과를 다시 보여드려요.<br>· 결과(이름, 캐릭터)는 팀 활동을 위해 저장되고, 같은 팀원과 운영진이 볼 수 있어요.<br>· 같은 기수에 이름이 같은 분이 있다면 이름 뒤에 A, B를 붙여주세요.</p>
+      <p class="notice">· 테스트는 <b>1인 1회</b>만 응답할 수 있어요. 이미 응답했다면 저장된 결과를 다시 보여드려요.<br>· 결과(이름, 캐릭터)는 팀 활동을 위해 저장되고, 같은 팀원이 함께 볼 수 있어요.<br>· 같은 기수에 이름이 같은 분이 있다면 이름 뒤에 A, B를 붙여주세요.</p>
     </div>
   </section>
 
@@ -327,8 +348,11 @@
       <div class="prog-meta"><span id="prog-label">EPOCH · 케미 학습 중</span><span id="prog-count">1 / 10</span></div>
       <div class="track"><div class="fill" id="prog-fill" style="width:0%"></div></div>
     </div>
-    <span class="q-cat" id="q-cat"></span>
-    <p class="q-text" id="q-text"></p>
+    <div class="q-head">
+      <span class="q-emoji" id="q-emoji" aria-hidden="true"></span>
+      <span class="q-cat" id="q-cat"></span>
+      <p class="q-text" id="q-text"></p>
+    </div>
     <div class="opts" id="opts"></div>
     <div class="quiz-nav">
       <button class="back" id="btn-back" style="margin-top:0">← 이전</button>
@@ -574,70 +598,70 @@ const EL = [
 
 // 모든 문항은 캐릭터 문항(선지 5개, tp = 캐릭터 인덱스)
 const QS = [
-  { kind: 'el', cat: '나는 어떤 사람', q: '처음 만난 팀원들과의 첫 음성 회의, 나는?', opts: [
+  { kind: 'el', cat: '나는 어떤 사람', emo: '👋', q: '처음 만난 팀원들과의 첫 음성 회의, 나는?', opts: [
     { t: '먼저 인사하고 분위기를 띄운다', tp: 1 },
     { t: '조용히 듣다가 필요한 말만 한다', tp: 4 },
     { t: '이번 프로젝트로 해보고 싶은 아이디어부터 꺼낸다', tp: 0 },
     { t: '다른 사람 말에 맞장구치며 들어준다', tp: 2 },
     { t: '일정과 진행 방식부터 정리하자고 한다', tp: 3 }
   ]},
-  { kind: 'el', cat: '팀플 태도', q: '역할을 나눌 때 내가 끌리는 일은?', opts: [
+  { kind: 'el', cat: '팀플 태도', emo: '🧩', q: '역할을 나눌 때 내가 끌리는 일은?', opts: [
     { t: '팀원 사이를 연결하고 빈틈을 메우는 일', tp: 2 },
     { t: '기획하고 새로운 기능을 실험하는 일', tp: 0 },
     { t: '어려운 기술 문제를 깊게 파는 일', tp: 4 },
     { t: '발표하고 팀 분위기를 챙기는 일', tp: 1 },
     { t: '일정 관리와 결과물 품질 체크', tp: 3 }
   ]},
-  { kind: 'el', cat: '팀플 태도', q: '내 작업 진행 상황을 팀에 공유하는 나의 방식은?', opts: [
+  { kind: 'el', cat: '팀플 태도', emo: '📊', q: '내 작업 진행 상황을 팀에 공유하는 나의 방식은?', opts: [
     { t: '어느 정도 결과가 나왔을 때 한 번에 정리해서 공유한다', tp: 4 },
     { t: '매일 팀 채널에 짧게라도 근황을 남긴다', tp: 1 },
     { t: '진행률과 남은 일을 정해진 형식으로 정리해 올린다', tp: 3 },
     { t: '새로 시도해본 게 생기면 신나서 바로 공유한다', tp: 0 },
     { t: '내 것을 올리면서 팀원들 진행 상황도 같이 물어본다', tp: 2 }
   ]},
-  { kind: 'el', cat: '팀플 태도', q: '자고 일어나니 팀 채팅이 100개 넘게 쌓여 있다.', opts: [
+  { kind: 'el', cat: '팀플 태도', emo: '💬', q: '자고 일어나니 팀 채팅이 100개 넘게 쌓여 있다.', opts: [
     { t: '결정된 사항과 내 할 일만 골라서 정리한다', tp: 3 },
     { t: '처음부터 다 읽고 이모지로 리액션을 남긴다', tp: 1 },
     { t: '흥미로운 아이디어가 보이면 거기에 바로 답장한다', tp: 0 },
     { t: '천천히 흐름을 파악한 뒤 필요한 의견만 남긴다', tp: 4 },
     { t: '다 읽고 “제가 놓친 거 있으면 알려주세요” 하고 남긴다', tp: 2 }
   ]},
-  { kind: 'el', cat: '갈등 대처', q: '팀원의 말투에 서운함을 느꼈다. 나는?', opts: [
+  { kind: 'el', cat: '갈등 대처', emo: '🥺', q: '팀원의 말투에 서운함을 느꼈다. 나는?', opts: [
     { t: '바로 말하기보다 하루쯤 지나 마음이 정리되면 이야기한다', tp: 4 },
     { t: '그 자리에서 솔직하게 말한다', tp: 1 },
     { t: '분위기를 바꿔 대화를 이어가고, 나중에 가볍게 꺼낸다', tp: 0 },
     { t: '같은 일이 반복되지 않게 소통 규칙을 정하자고 제안한다', tp: 3 },
     { t: '내가 오해한 건 아닌지 먼저 생각해본다', tp: 2 }
   ]},
-  { kind: 'el', cat: '갈등 대처', q: '팀원 두 명이 작업 방식을 두고 언성이 높아졌다.', opts: [
+  { kind: 'el', cat: '갈등 대처', emo: '🔥', q: '팀원 두 명이 작업 방식을 두고 언성이 높아졌다.', opts: [
     { t: '양쪽 이야기를 각각 들어주며 중재한다', tp: 2 },
     { t: '“이렇게 해보면 어때요?” 새로운 방식을 제안한다', tp: 0 },
     { t: '앞으로의 작업 규칙을 팀 전체가 같이 정하자고 한다', tp: 3 },
     { t: '“잠깐 쉬고 음성으로 얘기해요!” 분위기를 푼다', tp: 1 },
     { t: '한 발 떨어져서 무엇이 문제였는지 살펴본다', tp: 4 }
   ]},
-  { kind: 'el', cat: '갈등 대처', q: '최종 발표 일주일 전, 한 팀원이 이틀째 연락이 없다.', opts: [
+  { kind: 'el', cat: '갈등 대처', emo: '📵', q: '최종 발표 일주일 전, 한 팀원이 이틀째 연락이 없다.', opts: [
     { t: '걱정돼서 바로 DM과 멘션을 보낸다', tp: 1 },
     { t: '그 팀원이 맡은 작업이 어디까지 됐는지 먼저 확인한다', tp: 4 },
     { t: '팀장·매니저에게 상황을 공유하고 일정과 역할을 다시 나눈다', tp: 3 },
     { t: '그 몫을 다른 방법으로 채울 아이디어를 낸다', tp: 0 },
     { t: '“괜찮으세요? 편할 때 연락 주세요” 부담 없게 메시지를 남긴다', tp: 2 }
   ]},
-  { kind: 'el', cat: 'AI 프로젝트', q: '우리 프로젝트에 딱 맞을 것 같은 새 오픈소스 LLM이 공개됐다!', opts: [
+  { kind: 'el', cat: 'AI 프로젝트', emo: '🤖', q: '우리 프로젝트에 딱 맞을 것 같은 새 오픈소스 LLM이 공개됐다!', opts: [
     { t: '바로 우리 데이터로 붙여서 데모부터 돌려본다', tp: 0 },
     { t: '모델 카드, 벤치마크, 라이선스부터 꼼꼼히 읽어본다', tp: 4 },
     { t: '지금 모델과 같은 평가 지표로 비교할 실험 계획을 세운다', tp: 3 },
     { t: '팀 채널에 링크를 올리고 “이거 같이 써봐요!” 분위기를 띄운다', tp: 1 },
     { t: '바꾸면 팀원들 작업에 부담이 없을지 먼저 물어본다', tp: 2 }
   ]},
-  { kind: 'el', cat: '의견 조율', q: '갑자기 프로젝트 진행 중 문제점을 발견했다! 해결 방향은 어떻게 정할까?', opts: [
+  { kind: 'el', cat: '의견 조율', emo: '🚨', q: '갑자기 프로젝트 진행 중 문제점을 발견했다! 해결 방향은 어떻게 정할까?', opts: [
     { t: '원인부터 분석해서 근거를 들고 이야기한다', tp: 4 },
     { t: '문제, 원인, 해결책을 문서로 정리해 팀과 합의한다', tp: 3 },
     { t: '해결 방법 후보를 여러 개 빠르게 제안한다', tp: 0 },
     { t: '관련된 팀원들끼리 먼저 충분히 이야기해보게 한다', tp: 2 },
     { t: '“다같이 바로 음성 회의 해요!” 팀을 모은다', tp: 1 }
   ]},
-  { kind: 'el', cat: '의견 조율', q: '회의에서 의견 결정이 안 되고 계속 길어진다.', opts: [
+  { kind: 'el', cat: '의견 조율', emo: '⏳', q: '회의에서 의견 결정이 안 되고 계속 길어진다.', opts: [
     { t: '“투표로 정해요!”', tp: 1 },
     { t: '모두가 납득할 때까지 기다린다', tp: 2 },
     { t: '“둘 다 빠르게 해보고 비교해요”', tp: 0 },
@@ -681,7 +705,44 @@ const TEAM_MANY = [
   '✅ 밸리데이터가 많아요. 기준이 여러 개가 되지 않도록 팀 기준을 하나로 정리하세요.',
   '🔍 딥러너가 많아요. 각자 몰입하다 연락이 끊기지 않게 공유 시간을 정하세요.'
 ];
-const TEAM_TYPE = ['💡 아이디어 공장 팀', '⚡ 추진력 만렙 팀', '🫧 다정한 팀워크 팀', '✅ 완성도 장인 팀', '🔍 신중한 연구 팀'];
+// 팀 궁합 5가지 버전
+const TEAM_TYPES = [
+  {
+    emo: '🌈', name: '올라운더 드림팀', tag: '모든 힘이 고루 모인 팀',
+    desc: '아이디어, 에너지, 배려, 검증, 깊이가 고루 모였어요. 어떤 문제가 와도 누군가는 답을 가지고 있는 든든한 팀이에요. 다만 잘하는 게 저마다 달라서 방향이 흩어지기 쉬워요.',
+    strong: '어떤 문제든 해결할 사람이 팀 안에 있어요',
+    watch: '각자 잘하는 쪽으로 흩어져 방향이 갈릴 수 있어요',
+    tip: '첫 주에 팀 목표 한 줄과 역할 분담표를 함께 만들기'
+  },
+  {
+    emo: '🚀', name: '로켓 스타트 팀', tag: '아이디어와 에너지로 빠르게 출발하는 팀',
+    desc: '새로운 시도와 빠른 실행이 강점이에요. 베이스라인과 데모가 누구보다 빨리 나오고, 팀 채널이 늘 활기차요. 속도가 빠른 만큼 검증과 마무리가 밀리기 쉬워요.',
+    strong: '첫 결과가 빨리 나와서 방향을 일찍 잡을 수 있어요',
+    watch: '실험이 흩어지고 마감 직전에 검증이 몰릴 수 있어요',
+    tip: '주 1회 ‘실험 정리 & 검증’ 시간을 달력에 넣어두기'
+  },
+  {
+    emo: '🔬', name: '정밀 연구소 팀', tag: '근거와 완성도로 승부하는 팀',
+    desc: '꼼꼼한 검증과 깊은 분석이 강점이라 결과물의 신뢰도가 높아요. 발표장에서 숫자로 흔들릴 일이 적은 팀이에요. 신중한 만큼 결정과 공유가 늦어질 수 있어요.',
+    strong: '평가 지표와 근거가 탄탄해서 결과를 믿을 수 있어요',
+    watch: '각자 깊이 몰입하다 결정과 공유가 늦어질 수 있어요',
+    tip: '결정 마감 시간 정하기 + 매일 한 줄 진행 공유'
+  },
+  {
+    emo: '🤝', name: '찰떡 팀워크 팀', tag: '서로 챙기며 끝까지 함께 가는 팀',
+    desc: '경청과 배려가 강점이라 누구 하나 소외되지 않고 끝까지 함께 가요. 분위기가 편안해서 질문하기도 쉬워요. 다만 서로 배려하다 보면 결정이 늦어질 수 있어요.',
+    strong: '팀 분위기가 편안해서 모르는 걸 편하게 물어볼 수 있어요',
+    watch: '서로 눈치를 보다 결정이 미뤄질 수 있어요',
+    tip: '의견이 갈릴 때 정하는 방법(투표, 담당자 결정)을 미리 정하기'
+  },
+  {
+    emo: '⚖️', name: '밸런스 팀', tag: '서로 다른 힘이 균형을 이루는 팀',
+    desc: '성향이 다른 팀원들이 비슷한 비율로 모였어요. 서로의 빈틈을 채워줄 수 있는 조합이에요. 처음엔 일하는 방식이 달라 어색할 수 있지만, 맞춰가면 가장 크게 성장하는 팀이에요.',
+    strong: '서로 다른 시각이 모여 놓치는 부분이 적어요',
+    watch: '처음엔 일하는 속도와 방식이 달라 어색할 수 있어요',
+    tip: '서로의 ‘나와 일할 때 이렇게 해주세요’를 돌아가며 읽기'
+  }
+];
 
 const TOTAL = QS.length;
 const EL_TOTAL = QS.filter(q => q.kind === 'el').length;
@@ -725,7 +786,9 @@ function renderQ() {
   const q = QS[cur];
   $('prog-count').textContent = `${cur + 1} / ${TOTAL}`;
   $('prog-fill').style.width = `${(cur / TOTAL) * 100}%`;
-  $('q-cat').textContent = `상황 ${String(cur + 1).padStart(2, '0')} · ${q.cat}`;
+  $('q-cat').textContent = `Q${cur + 1} · ${q.cat}`;
+  const qe = $('q-emoji'); qe.textContent = q.emo;
+  qe.style.animation = 'none'; void qe.offsetWidth; qe.style.animation = '';
   $('q-text').textContent = q.q;
   const list = $('opts'); list.innerHTML = '';
   q.opts.forEach((o, i) => {
@@ -773,8 +836,10 @@ function finish() {
   renderResult(false);
   postData({
     action: 'save', kisu: who.kisu, team: who.team, name: who.name, nameKey: nameKey(who.name),
-    element: EL[mine.el].name, subName: EL[mine.sub].name, el: mine.el, sub: mine.sub,
-    dist: JSON.stringify(mine.dist)
+    element: `${EL[mine.el].ch} ${EL[mine.el].name}`, subName: `${EL[mine.sub].ch} ${EL[mine.sub].name}`, el: mine.el, sub: mine.sub,
+    dist: JSON.stringify(mine.dist),
+    // 문항별 답변: 헤더 "Q1. 질문", 값 "선택지번호. 선택지 내용"
+    answers: QS.map((q, i) => ({ no: i + 1, q: q.q, a: `${answers[i] + 1}. ${q.opts[answers[i]].t}` }))
   }, true);
 }
 
@@ -875,12 +940,14 @@ function grade(score) {
   if (score >= 88) return '찰떡궁합';
   return '환상의 콤비 예감';
 }
+// 5가지 팀 유형 판정: 캐릭터 4종 이상 → 올라운더 / 추진(💡⚡) · 배려(🫧) · 정밀(✅🔍) 중 가장 많은 쪽 / 동률 → 밸런스
 function teamType(counts) {
-  const distinct = counts.filter(c => c > 0).length;
-  if (distinct >= 4) return '🌈 올라운더 팀';
-  const max = Math.max(...counts);
-  const tops = counts.map((c, i) => c === max ? i : -1).filter(i => i >= 0);
-  return tops.length > 1 ? '⚖️ 밸런스 팀' : TEAM_TYPE[tops[0]];
+  if (counts.filter(c => c > 0).length >= 4) return 0;
+  const drive = counts[0] + counts[1], care = counts[2], precise = counts[3] + counts[4];
+  if (drive > care && drive > precise) return 1;
+  if (precise > drive && precise > care) return 2;
+  if (care > drive && care > precise) return 3;
+  return 4;
 }
 
 const SAMPLE = [
@@ -928,11 +995,17 @@ function renderTeam() {
   }
   const counts = [0, 0, 0, 0, 0]; ms.forEach(m => counts[m.el]++);
   const score = teamScore(ms);
+  const tt = TEAM_TYPES[teamType(counts)];
+  const teamNo = rules.team || $('load-team').value;
 
   let html = `<div id="team-capture">`;
-  html += `<div class="card score-hero"><span class="eyebrow">${esc(rules.team || $('load-team').value || '')}${(rules.team || $('load-team').value) ? '팀 · ' : ''}우리 팀 케미 점수</span>` +
-    `<div class="score-num">${score}<small>점</small></div><div class="score-grade">${grade(score)}</div>` +
-    `<span class="tag" style="margin-top:4px">${teamType(counts)}</span></div>`;
+  html += `<div class="card score-hero"><span class="eyebrow">${teamNo ? esc(teamNo) + '팀 · ' : ''}우리 팀 궁합 결과는</span>` +
+    `<span class="team-emo">${tt.emo}</span><h2 class="team-name">${tt.name}</h2><p class="team-tag">${tt.tag}</p>` +
+    `<div class="score-line"><span class="score-num">${score}<small>점</small></span><span class="score-grade">${grade(score)}</span></div></div>`;
+
+  // 팀 유형 설명
+  html += `<div class="card team-type"><p class="sec-label">${tt.emo} 우리 팀은 이런 팀이에요</p><p class="desc">${tt.desc}</p>` +
+    `<div class="tt-grid"><div><b>💪 강점</b><span>${tt.strong}</span></div><div><b>👀 조심할 점</b><span>${tt.watch}</span></div><div><b>🔧 이렇게 해봐요</b><span>${tt.tip}</span></div></div></div>`;
 
   // 팀원 결과
   html += `<div class="card"><p class="sec-label">👥 팀원 결과 (${ms.length}명)</p><div class="roster">` +
@@ -967,7 +1040,7 @@ function renderTeam() {
   out.innerHTML = html;
   $('btn-save-team').onclick = e => saveImage($('team-capture'), `케미러닝_${rules.team || $('load-team').value || '우리'}팀_궁합.png`, e.currentTarget);
 
-  teamCtx = { score, grade: grade(score), tips };
+  teamCtx = { score, grade: grade(score), tips: [tt.tip, ...tips], type: `${tt.emo} ${tt.name}` };
   syncRules();
 }
 
@@ -1017,7 +1090,7 @@ ${roleLines}
 🤝 의견이 다를 때 : ${v(rules.disagree)}
 🚨 서운하거나 힘들 때 : ${v(rules.hurt)}
 🙋 빠지거나 늦을 때 : ${v(rules.absent)}
-✨ 우리 팀만의 규칙 : ${v(rules.extra)}` + (teamCtx ? `\n💞 팀 케미 : ${teamCtx.score}점 (${teamCtx.grade})` : '');
+✨ 우리 팀만의 규칙 : ${v(rules.extra)}` + (teamCtx ? `\n💞 팀 궁합 : ${teamCtx.type} · ${teamCtx.score}점 (${teamCtx.grade})` : '');
 }
 function renderRulesPreview() { $('rules-preview').textContent = rulesText(); }
 
