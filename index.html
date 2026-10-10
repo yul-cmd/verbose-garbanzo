@@ -229,6 +229,9 @@
   .role span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .rules-err { color: var(--fire); font-size: 13px; }
   #rules-preview { margin: 0; }
+  .rules-done { display: grid; gap: 4px; font-size: 14px; line-height: 1.7; word-break: keep-all; }
+  .role input.active { border-color: var(--accent); background: var(--accent-soft); }
+  #role-chips .chip-btn:disabled { opacity: .4; cursor: default; }
 
   @media (max-width: 460px) {
     .rrow { grid-template-columns: 1fr; }
@@ -455,7 +458,7 @@
       </div>
       <div class="rrow">
         <div class="rfield"><label for="r-team">팀 번호</label><input id="r-team" data-r="team" placeholder="예) 3"></div>
-        <div class="rfield"><label for="r-name">팀명</label><input id="r-name" data-r="name" placeholder="예) 오버핏방지단"></div>
+        <div class="rfield"><label for="r-name">💞 우리 팀 궁합 결과</label><input id="r-name" data-r="name" placeholder="예) ⚖️ 밸런스 팀"></div>
       </div>
       <div class="rfield">
         <label for="r-goal">🎯 우리 팀 목표 (한 줄)</label>
@@ -465,10 +468,10 @@
         <label for="r-core">⏰ 코어타임 (함께 작업 + 연락 가능한 시간)</label>
         <textarea id="r-core" data-r="core" placeholder="함께 작업하고 연락할 수 있는 시간을 평일·주말로 나눠 정해요"></textarea>
         <div class="chips" data-for="r-core">
-          <button type="button" class="chip-btn">평일 13~16시 함께 작업</button>
-          <button type="button" class="chip-btn">매일 시작할 때 15분 싱크</button>
-          <button type="button" class="chip-btn">평일 연락은 22시까지</button>
-          <button type="button" class="chip-btn">주말엔 쉬고 급한 일만 팀장에게</button>
+          <button type="button" class="chip-btn">프로젝트 기간 9~19시엔 칼답</button>
+          <button type="button" class="chip-btn">평일 연락은 23시까지</button>
+          <button type="button" class="chip-btn">매일 시작할 때 아침인사</button>
+          <button type="button" class="chip-btn">주말 회의 시 늦은 저녁은 피하기</button>
         </div>
       </div>
       <div class="rfield">
@@ -484,6 +487,26 @@
       <div class="rfield">
         <label>👥 역할 분담</label>
         <div class="roles" id="roles"></div>
+        <p class="note" id="role-hint">역할을 넣을 팀원 칸을 먼저 누른 뒤, 아래 예시를 눌러요. 여러 개 고를 수 있어요.</p>
+        <div class="chips" id="role-chips">
+          <button type="button" class="chip-btn">공지 리마인더(위클리 페이퍼, 일반 공지 등)</button>
+          <button type="button" class="chip-btn">일정 정리</button>
+          <button type="button" class="chip-btn">회의 진행</button>
+          <button type="button" class="chip-btn">회의록 작성</button>
+          <button type="button" class="chip-btn">자료 조사</button>
+          <button type="button" class="chip-btn">EDA</button>
+          <button type="button" class="chip-btn">데이터 수집</button>
+          <button type="button" class="chip-btn">데이터 전처리</button>
+          <button type="button" class="chip-btn">모델링</button>
+          <button type="button" class="chip-btn">실험(파인튜닝)</button>
+          <button type="button" class="chip-btn">성능 평가</button>
+          <button type="button" class="chip-btn">프롬프트 설계</button>
+          <button type="button" class="chip-btn">서비스·데모 개발</button>
+          <button type="button" class="chip-btn">GitHub 관리</button>
+          <button type="button" class="chip-btn">보고서 작성</button>
+          <button type="button" class="chip-btn">PPT 제작</button>
+          <button type="button" class="chip-btn">발표</button>
+        </div>
       </div>
       <div class="rfield">
         <label for="r-disagree">🤝 의견이 다를 때<em>★</em></label>
@@ -525,6 +548,12 @@
       </div>
       <p class="rules-err" id="rules-err" hidden>★ 항목(의견이 다를 때, 서운하거나 힘들 때)을 채워주세요.</p>
       <button class="btn" id="btn-rules-copy">팀 규칙 복사하기</button>
+      <div class="boxed manual rules-done">
+        <p>🎉 <b>우리 팀만의 규칙이 완성되었습니다.</b></p>
+        <p>이제 팀장이 디스코드 팀 채널에 <b>고정 메시지</b>로 설정해 주세요! 📌</p>
+        <p>팀원들과 논의 후 팀 규칙은 언제든지 수정할 수 있어요. 정해진 팀 규칙은 최대한 지켜주세요!</p>
+        <p>스프린터 여러분의 프로젝트를 응원합니다! 💜</p>
+      </div>
     </div>
 
     <button class="link-btn" id="btn-team-back" style="margin-top:18px">← 처음으로</button>
@@ -1062,22 +1091,35 @@ $('btn-add').onclick = () => { if (members.length < 6) { members.push({ name: ''
 let teamCtx = null;
 const rules = { team: '', name: '', goal: '', core: '', reply: '', disagree: '', hurt: '', absent: '', extra: '' };
 let roles = [];
-let coreDirty = false;
+let coreDirty = false, nameDirty = false;
+let activeRole = 0; // 역할 예시를 넣을 팀원
 
 function syncRules() {
   if (!rules.team && (who.team || $('load-team').value)) { rules.team = who.team || $('load-team').value; $('r-team').value = rules.team; }
+  // 팀 궁합 결과를 자동으로 채움 (직접 고쳤다면 유지)
+  if (teamCtx && !nameDirty) { rules.name = teamCtx.type; $('r-name').value = rules.name; }
   roles.length = members.length;
+  if (activeRole >= members.length) activeRole = 0;
   $('roles').innerHTML = members.map((m, i) =>
     `<div class="role"><span>${esc(m.name.trim() || `팀원 ${i + 1}`)}</span>` +
-    `<input id="r-role-${i}" data-role="${i}" placeholder="예) 데이터 전처리, 발표" value="${esc(roles[i] || '')}" aria-label="${esc(m.name.trim() || `팀원 ${i + 1}`)} 역할"></div>`).join('');
+    `<input id="r-role-${i}" data-role="${i}" class="${i === activeRole ? 'active' : ''}" placeholder="역할 입력" value="${esc(roles[i] || '')}" aria-label="${esc(m.name.trim() || `팀원 ${i + 1}`)} 역할"></div>`).join('');
+  updateRoleHint();
   const extra = teamCtx ? teamCtx.tips : [];
   $('extra-chips').innerHTML = [...extra, '매일 아침 한 줄 인사하기', '주 1회 15분 팀 회고하기']
     .map(x => `<button type="button" class="chip-btn">${esc(x)}</button>`).join('');
   renderRulesPreview();
 }
 
+function updateRoleHint() {
+  const m = members[activeRole];
+  $('role-hint').textContent = m
+    ? `지금 ‘${(m.name.trim() || `팀원 ${activeRole + 1}`)}’ 님 역할을 고르고 있어요. 다른 팀원 칸을 누르면 바뀌어요. 여러 개 고를 수 있어요.`
+    : '팀원 결과를 불러오면 팀원별로 역할을 고를 수 있어요.';
+}
+
 function rulesText() {
-  const head = `[${rules.team || 'N'}팀]${rules.name ? ' ' + rules.name : ''} 팀 규칙`;
+  const head = `[${rules.team || 'N'}팀] 팀 규칙` +
+    (rules.name.trim() ? `\n💞 우리 팀 궁합 : ${rules.name.trim()}` + (teamCtx ? ` (${teamCtx.score}점 · ${teamCtx.grade})` : '') : '');
   const v = x => x.trim() || '-';
   const roleLines = members.map((m, i) => `  - ${m.name.trim() || `팀원 ${i + 1}`} : ${(roles[i] || '').trim() || '-'}`).join('\n');
   const core = rules.core.trim() ? '\n' + rules.core.trim().split('\n').map(l => '  - ' + l).join('\n') : ' -';
@@ -1090,20 +1132,37 @@ ${roleLines}
 🤝 의견이 다를 때 : ${v(rules.disagree)}
 🚨 서운하거나 힘들 때 : ${v(rules.hurt)}
 🙋 빠지거나 늦을 때 : ${v(rules.absent)}
-✨ 우리 팀만의 규칙 : ${v(rules.extra)}` + (teamCtx ? `\n💞 팀 궁합 : ${teamCtx.type} · ${teamCtx.score}점 (${teamCtx.grade})` : '');
+✨ 우리 팀만의 규칙 : ${v(rules.extra)}`;
 }
 function renderRulesPreview() { $('rules-preview').textContent = rulesText(); }
 
 $('rules').addEventListener('input', e => {
   const k = e.target.dataset.r, ri = e.target.dataset.role;
-  if (k) { rules[k] = e.target.value; if (k === 'core') coreDirty = true; }
+  if (k) { rules[k] = e.target.value; if (k === 'core') coreDirty = true; if (k === 'name') nameDirty = true; }
   else if (ri !== undefined) roles[+ri] = e.target.value;
   else return;
   $('rules-err').hidden = true;
   renderRulesPreview();
 });
+// 역할 칸을 누르면 그 팀원이 역할 예시를 받을 대상이 됨
+$('roles').addEventListener('focusin', e => {
+  const ri = e.target.dataset.role; if (ri === undefined) return;
+  activeRole = +ri;
+  document.querySelectorAll('#roles input').forEach((el, i) => el.classList.toggle('active', i === activeRole));
+  updateRoleHint();
+});
 $('rules').addEventListener('click', e => {
   const b = e.target.closest('.chip-btn'); if (!b) return;
+  if (b.closest('#role-chips')) {
+    if (!members.length) return;
+    const field = $(`r-role-${activeRole}`), add = b.textContent;
+    const cur = field.value.trim();
+    if (cur.split(', ').includes(add)) return;
+    field.value = cur ? `${cur}, ${add}` : add;
+    roles[activeRole] = field.value;
+    renderRulesPreview();
+    return;
+  }
   const id = b.closest('.chips').dataset.for, field = $(id), add = b.textContent;
   const cur = field.value.trim();
   if (cur.includes(add)) return;
