@@ -228,6 +228,7 @@
   .role { display: grid; grid-template-columns: minmax(0, 110px) 1fr; gap: 8px; align-items: center; font-size: 13.5px; }
   .role span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .rules-err { color: var(--fire); font-size: 13px; }
+  #rules .missing { border-color: var(--fire) !important; background: rgba(210,73,60,.06); }
   #rules-preview { margin: 0; }
   .rules-done { display: grid; gap: 4px; font-size: 14px; line-height: 1.7; word-break: keep-all; }
   .role input.active { border-color: var(--accent); background: var(--accent-soft); }
@@ -454,18 +455,18 @@
       <div>
         <span class="eyebrow">Team Rules</span>
         <h2>우리 팀 규칙 정하기</h2>
-        <p class="note" style="margin-top:6px">궁합 결과를 보면서 함께 채워요. 추천 문구를 누르면 바로 들어가요. <b style="color:var(--accent)">★</b> 항목은 꼭 채워주세요.</p>
+        <p class="note" style="margin-top:6px">궁합 결과를 보면서 함께 채워요. 추천 문구를 누르면 바로 들어가요. 모든 항목(<b style="color:var(--accent)">★</b>)을 채워야 팀 규칙을 복사할 수 있어요.</p>
       </div>
       <div class="rrow">
-        <div class="rfield"><label for="r-team">팀 번호</label><input id="r-team" data-r="team" placeholder="예) 3"></div>
-        <div class="rfield"><label for="r-name">💞 우리 팀 궁합 결과</label><input id="r-name" data-r="name" placeholder="예) ⚖️ 밸런스 팀"></div>
+        <div class="rfield"><label for="r-team">팀 번호<em>★</em></label><input id="r-team" data-r="team" placeholder="예) 3"></div>
+        <div class="rfield"><label for="r-name">💞 우리 팀 궁합 결과<em>★</em></label><input id="r-name" data-r="name" placeholder="예) ⚖️ 밸런스 팀"></div>
       </div>
       <div class="rfield">
-        <label for="r-goal">🎯 우리 팀 목표 (한 줄)</label>
+        <label for="r-goal">🎯 우리 팀 목표 (한 줄)<em>★</em></label>
         <input id="r-goal" data-r="goal" placeholder="예) 끝까지 다같이 완주하고, 각자 포트폴리오 하나씩 챙기기">
       </div>
       <div class="rfield">
-        <label for="r-core">⏰ 코어타임 (함께 작업 + 연락 가능한 시간)</label>
+        <label for="r-core">⏰ 코어타임 (함께 작업 + 연락 가능한 시간)<em>★</em></label>
         <textarea id="r-core" data-r="core" placeholder="함께 작업하고 연락할 수 있는 시간을 평일·주말로 나눠 정해요"></textarea>
         <div class="chips" data-for="r-core">
           <button type="button" class="chip-btn">프로젝트 기간 9~19시엔 칼답</button>
@@ -475,7 +476,7 @@
         </div>
       </div>
       <div class="rfield">
-        <label for="r-reply">💬 응답 약속</label>
+        <label for="r-reply">💬 응답 약속<em>★</em></label>
         <textarea id="r-reply" data-r="reply" placeholder="메시지에 언제까지 답할지 정해요"></textarea>
         <div class="chips" data-for="r-reply">
           <button type="button" class="chip-btn">연락 시간 안에 2시간 내로 답하기</button>
@@ -485,7 +486,7 @@
         </div>
       </div>
       <div class="rfield">
-        <label>👥 역할 분담</label>
+        <label>👥 역할 분담 (팀원 모두)<em>★</em></label>
         <div class="roles" id="roles"></div>
         <p class="note" id="role-hint">역할을 넣을 팀원 칸을 먼저 누른 뒤, 아래 예시를 눌러요. 여러 개 고를 수 있어요.</p>
         <div class="chips" id="role-chips">
@@ -529,7 +530,7 @@
         </div>
       </div>
       <div class="rfield">
-        <label for="r-absent">🙋 빠지거나 늦을 때</label>
+        <label for="r-absent">🙋 빠지거나 늦을 때<em>★</em></label>
         <textarea id="r-absent" data-r="absent" placeholder="자리를 비울 때 어떻게 알릴지 정해요"></textarea>
         <div class="chips" data-for="r-absent">
           <button type="button" class="chip-btn">최소 하루 전 팀 채널에 공유</button>
@@ -538,7 +539,7 @@
         </div>
       </div>
       <div class="rfield">
-        <label for="r-extra">✨ 우리 팀만의 규칙</label>
+        <label for="r-extra">✨ 우리 팀만의 규칙<em>★</em></label>
         <textarea id="r-extra" data-r="extra" placeholder="튜닝 팁을 참고해 하나 더 정해봐요"></textarea>
         <div class="chips" id="extra-chips" data-for="r-extra"></div>
       </div>
@@ -546,7 +547,7 @@
         <p class="sec-label">팀 채널에 올릴 규칙</p>
         <pre class="share" id="rules-preview" style="white-space:pre-wrap;word-break:keep-all;font-family:var(--font-mono);font-size:12px;line-height:1.7;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:14px;margin-top:0"></pre>
       </div>
-      <p class="rules-err" id="rules-err" hidden>★ 항목(의견이 다를 때, 서운하거나 힘들 때)을 채워주세요.</p>
+      <p class="rules-err" id="rules-err" hidden></p>
       <button class="btn" id="btn-rules-copy">팀 규칙 복사하기</button>
       <div class="boxed manual rules-done">
         <p>🎉 <b>우리 팀만의 규칙이 완성되었습니다.</b></p>
@@ -1092,6 +1093,8 @@ let teamCtx = null;
 const rules = { team: '', name: '', goal: '', core: '', reply: '', disagree: '', hurt: '', absent: '', extra: '' };
 let roles = [];
 let coreDirty = false, nameDirty = false;
+const REQUIRED = [['team', '팀 번호'], ['name', '우리 팀 궁합 결과'], ['goal', '팀 목표'], ['core', '코어타임'], ['reply', '응답 약속'],
+  ['disagree', '의견이 다를 때'], ['hurt', '서운하거나 힘들 때'], ['absent', '빠지거나 늦을 때'], ['extra', '우리 팀만의 규칙']];
 let activeRole = 0; // 역할 예시를 넣을 팀원
 
 function syncRules() {
@@ -1141,6 +1144,7 @@ $('rules').addEventListener('input', e => {
   if (k) { rules[k] = e.target.value; if (k === 'core') coreDirty = true; if (k === 'name') nameDirty = true; }
   else if (ri !== undefined) roles[+ri] = e.target.value;
   else return;
+  e.target.classList.remove('missing');
   $('rules-err').hidden = true;
   renderRulesPreview();
 });
@@ -1160,6 +1164,7 @@ $('rules').addEventListener('click', e => {
     if (cur.split(', ').includes(add)) return;
     field.value = cur ? `${cur}, ${add}` : add;
     roles[activeRole] = field.value;
+    field.classList.remove('missing');
     renderRulesPreview();
     return;
   }
@@ -1168,11 +1173,26 @@ $('rules').addEventListener('click', e => {
   if (cur.includes(add)) return;
   field.value = cur ? `${cur} / ${add}` : add;
   rules[field.dataset.r] = field.value;
+  field.classList.remove('missing');
   $('rules-err').hidden = true;
   renderRulesPreview();
 });
 $('btn-rules-copy').onclick = () => {
-  if (!rules.disagree.trim() || !rules.hurt.trim()) { $('rules-err').hidden = false; return; }
+  // 모든 항목 필수: 비어 있는 칸을 표시하고 첫 칸으로 이동
+  document.querySelectorAll('#rules .missing').forEach(el => el.classList.remove('missing'));
+  const missing = [];
+  REQUIRED.forEach(([k, label]) => { if (!rules[k].trim()) { missing.push(label); $(`r-${k}`).classList.add('missing'); } });
+  members.forEach((m, i) => {
+    if (!(roles[i] || '').trim()) { missing.push(`역할 분담(${m.name.trim() || `팀원 ${i + 1}`})`); $(`r-role-${i}`).classList.add('missing'); }
+  });
+  if (missing.length) {
+    const err = $('rules-err');
+    err.textContent = `아직 비어 있는 항목이 있어요: ${missing.join(', ')}`;
+    err.hidden = false;
+    const first = document.querySelector('#rules .missing');
+    if (first) { first.scrollIntoView({ behavior: 'smooth', block: 'center' }); first.focus({ preventScroll: true }); }
+    return;
+  }
   copyText(rulesText(), $('btn-rules-copy'), '팀 규칙 복사하기', $('rules-preview'));
 };
 
